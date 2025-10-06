@@ -1,142 +1,0 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق صحتي - My Health App</title>
-    <link rel="stylesheet" href="styles/style.css">
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>🏥 تطبيق صحتي - My Health App</h1>
-            <nav>
-                <a href="#" onclick="showSection('patients')">👥 إدارة المرضى</a>
-                <a href="#" onclick="showSection('doctors')">👨‍⚕️ إدارة الأطباء</a>
-                <a href="#" onclick="showSection('appointments')">📅 إدارة المواعيد</a>
-                <a href="#" onclick="showSection('dashboard')">📊 لوحة التحكم</a>
-            </nav>
-        </header>
-
-        <!-- لوحة التحكم -->
-        <section id="dashboard" class="section">
-            <h2>📊 لوحة التحكم</h2>
-            <div class="stats">
-                <div class="data-item">
-                    <h3>إحصائيات سريعة</h3>
-                    <p>عدد المرضى: <span id="patients-count">0</span></p>
-                    <p>عدد الأطباء: <span id="doctors-count">0</span></p>
-                    <p>عدد المواعيد: <span id="appointments-count">0</span></p>
-                </div>
-            </div>
-        </section>
-
-        <!-- قسم المرضى -->
-        <section id="patients" class="section hidden">
-            <h2>👥 إدارة المرضى</h2>
-            
-            <div id="add-patient-form" class="hidden">
-                <h3>إضافة مريض جديد</h3>
-                <div class="form-group">
-                    <label for="patient-name">الاسم الكامل:</label>
-                    <input type="text" id="patient-name" placeholder="أدخل الاسم الكامل">
-                </div>
-                <div class="form-group">
-                    <label for="patient-phone">رقم الهاتف:</label>
-                    <input type="tel" id="patient-phone" placeholder="أدخل رقم الهاتف">
-                </div>
-                <div class="form-group">
-                    <label for="patient-city">المدينة:</label>
-                    <input type="text" id="patient-city" placeholder="أدخل المدينة">
-                </div>
-                <button onclick="addPatient()">إضافة المريض</button>
-                <button onclick="hideForm('add-patient-form')" style="background: #6c757d;">إلغاء</button>
-            </div>
-
-            <button onclick="showForm('add-patient-form')">➕ إضافة مريض جديد</button>
-            <button onclick="loadPatients()">🔄 تحديث القائمة</button>
-            
-            <div id="patients-list" class="data-list">
-                <!-- سيتم عرض المرضى هنا -->
-            </div>
-        </section>
-
-        <!-- قسم الأطباء -->
-        <section id="doctors" class="section hidden">
-            <h2>👨‍⚕️ إدارة الأطباء</h2>
-            
-            <div id="add-doctor-form" class="hidden">
-                <h3>إضافة طبيب جديد</h3>
-                <div class="form-group">
-                    <label for="doctor-name">اسم الطبيب:</label>
-                    <input type="text" id="doctor-name" placeholder="أدخل اسم الطبيب">
-                </div>
-                <div class="form-group">
-                    <label for="doctor-specialty">التخصص:</label>
-                    <input type="text" id="doctor-specialty" placeholder="أدخل التخصص">
-                </div>
-                <div class="form-group">
-                    <label for="doctor-phone">رقم الهاتف:</label>
-                    <input type="tel" id="doctor-phone" placeholder="أدخل رقم الهاتف">
-                </div>
-                <div class="form-group">
-                    <label for="doctor-clinic">العيادة:</label>
-                    <input type="text" id="doctor-clinic" placeholder="أدخل اسم العيادة">
-                </div>
-                <button onclick="addDoctor()">إضافة الطبيب</button>
-                <button onclick="hideForm('add-doctor-form')" style="background: #6c757d;">إلغاء</button>
-            </div>
-
-            <button onclick="showForm('add-doctor-form')">➕ إضافة طبيب جديد</button>
-            <button onclick="loadDoctors()">🔄 تحديث القائمة</button>
-            
-            <div id="doctors-list" class="data-list">
-                <!-- سيتم عرض الأطباء هنا -->
-            </div>
-        </section>
-
-        <!-- قسم المواعيد -->
-        <section id="appointments" class="section hidden">
-            <h2>📅 إدارة المواعيد</h2>
-            
-            <div id="add-appointment-form" class="hidden">
-                <h3>حجز موعد جديد</h3>
-                <div class="form-group">
-                    <label for="appointment-patient">المريض:</label>
-                    <select id="appointment-patient">
-                        <option value="">اختر المريض</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="appointment-doctor">الطبيب:</label>
-                    <select id="appointment-doctor">
-                        <option value="">اختر الطبيب</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="appointment-date">تاريخ ووقت الموعد:</label>
-                    <input type="datetime-local" id="appointment-date">
-                </div>
-                <div class="form-group">
-                    <label for="appointment-notes">ملاحظات:</label>
-                    <textarea id="appointment-notes" placeholder="أدخل أي ملاحظات"></textarea>
-                </div>
-                <button onclick="addAppointment()">حجز الموعد</button>
-                <button onclick="hideForm('add-appointment-form')" style="background: #6c757d;">إلغاء</button>
-            </div>
-
-            <button onclick="showAppointmentForm()">➕ حجز موعد جديد</button>
-            <button onclick="loadAppointments()">🔄 تحديث القائمة</button>
-            
-            <div id="appointments-list" class="data-list">
-                <!-- سيتم عرض المواعيد هنا -->
-            </div>
-        </section>
-
-        <!-- رسائل التنبيه -->
-        <div id="message"></div>
-    </div>
-
-    <script src="js/app.js"></script>
-</body>
-</html>
