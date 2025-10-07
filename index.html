@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق صحتي المتكامل - نظام إدارة المستشفيات</title>
+    <title id="app-title">تطبيق صحتي المتكامل - نظام إدارة المستشفيات</title>
     <link rel="stylesheet" href="styles/style.css">
+    <link rel="icon" href="" id="app-favicon">
 </head>
-<body>
+<body data-theme="default">
     <!-- شاشة تسجيل الدخول -->
     <div id="login-page" class="login-container">
         <div class="login-box">
-            <div class="login-header">
-                <h1>🏥 تطبيق صحتي المتكامل</h1>
-                <p>نظام إدارة المستشفيات والعيادات</p>
+            <div class="login-header" id="login-header">
+                <img src="" alt="شعار التطبيق" id="app-logo" class="app-logo hidden">
+                <h1 id="app-name">🏥 تطبيق صحتي المتكامل</h1>
+                <p id="app-subtitle">نظام إدارة المستشفيات والعيادات</p>
             </div>
             
             <div class="login-form">
@@ -26,6 +28,7 @@
                             <div class="account-info">
                                 <strong>مدير النظام</strong>
                                 <span>admin@sehati.com</span>
+                                <small>+967711111111</small>
                             </div>
                         </div>
                         <div class="account-card doctor" onclick="fillLogin('doctor@sehati.com', '123456')">
@@ -33,6 +36,7 @@
                             <div class="account-info">
                                 <strong>طبيب</strong>
                                 <span>doctor@sehati.com</span>
+                                <small>+967722222222</small>
                             </div>
                         </div>
                         <div class="account-card patient" onclick="fillLogin('patient@sehati.com', '123456')">
@@ -40,6 +44,7 @@
                             <div class="account-info">
                                 <strong>مريض</strong>
                                 <span>patient@sehati.com</span>
+                                <small>+967733333333</small>
                             </div>
                         </div>
                         <div class="account-card accountant" onclick="fillLogin('accountant@sehati.com', '123456')">
@@ -47,6 +52,7 @@
                             <div class="account-info">
                                 <strong>محاسب</strong>
                                 <span>accountant@sehati.com</span>
+                                <small>+967744444444</small>
                             </div>
                         </div>
                     </div>
@@ -62,6 +68,13 @@
                     <input type="password" id="login-password" placeholder="أدخل كلمة المرور">
                 </div>
                 
+                <div class="login-options">
+                    <label class="remember-me">
+                        <input type="checkbox" id="remember-me">
+                        تذكر دخولي
+                    </label>
+                </div>
+                
                 <button class="login-btn" onclick="handleLogin()">🚀 دخول للنظام</button>
                 
                 <div class="login-features">
@@ -73,6 +86,8 @@
                         <div class="feature-item">✅ التقارير المالية</div>
                         <div class="feature-item">✅ خرائط العيادات</div>
                         <div class="feature-item">✅ المساعد الذكي</div>
+                        <div class="feature-item">✅ إدارة الجلسات</div>
+                        <div class="feature-item">✅ التحكم الكامل</div>
                     </div>
                 </div>
             </div>
@@ -83,23 +98,35 @@
     <div id="admin-dashboard" class="dashboard hidden">
         <header class="dashboard-header">
             <div class="header-left">
-                <h1>👑 لوحة إدارة النظام</h1>
+                <h1>👑 لوحة إدارة النظام المتكاملة</h1>
                 <div class="user-info">
                     <span id="admin-name">مدير النظام</span>
-                    <span class="user-role">مدير</span>
+                    <span class="user-role">مدير نظام</span>
+                    <span class="session-status active" id="session-status">نشط</span>
                 </div>
             </div>
             <div class="header-right">
-                <button class="header-btn" onclick="showAdminSection('stats')">📊 الإحصائيات</button>
-                <button class="header-btn" onclick="showAdminSection('users')">👥 المستخدمين</button>
-                <button class="header-btn" onclick="showAdminSection('reports')">📈 التقارير</button>
+                <button class="header-btn" onclick="showAdminSection('stats')">📊 الإحصائيات الذكية</button>
+                <button class="header-btn" onclick="showAdminSection('users')">👥 إدارة المستخدمين</button>
+                <button class="header-btn" onclick="showAdminSection('specialties')">🎯 التخصصات الطبية</button>
+                <button class="header-btn" onclick="showAdminSection('appearance')">🎨 المظهر والعلامة</button>
+                <button class="header-btn" onclick="showAdminSection('ai')">🤖 الذكاء الاصطناعي</button>
                 <button class="header-btn logout-btn" onclick="logout()">🚪 خروج</button>
             </div>
         </header>
 
         <div class="dashboard-content">
-            <!-- إحصائيات المدير -->
+            <!-- الإحصائيات الذكية -->
             <div id="admin-stats" class="admin-section">
+                <div class="section-header">
+                    <h2>📊 الإحصائيات الذكية والنظام الآلي</h2>
+                    <button class="ai-btn" onclick="runSystemDiagnosis()">🔍 فحص النظام الآلي</button>
+                </div>
+                
+                <div class="ai-alerts" id="ai-alerts-container">
+                    <!-- التنبيهات الذكية -->
+                </div>
+
                 <div class="stats-grid">
                     <div class="stat-card large">
                         <div class="stat-icon">👥</div>
@@ -169,43 +196,153 @@
                 </div>
             </div>
 
-            <!-- إدارة المستخدمين -->
+            <!-- إدارة المستخدمين المحسنة -->
             <div id="admin-users" class="admin-section hidden">
                 <div class="section-header">
-                    <h2>👥 إدارة المستخدمين</h2>
+                    <h2>👥 إدارة المستخدمين والصلاحيات</h2>
                     <button class="add-btn" onclick="showAddUserForm()">➕ إضافة مستخدم</button>
                 </div>
                 
+                <div class="users-controls">
+                    <div class="control-group">
+                        <h4>🔒 إعدادات الأمان العامة</h4>
+                        <button class="security-btn" onclick="enableTwoFactorAuth()">🔐 تفعيل المصادقة الثنائية</button>
+                        <button class="security-btn" onclick="forcePasswordReset()">🔄 إجبار تغيير كلمات المرور</button>
+                        <button class="security-btn" onclick="viewSessionReports()">📊 تقرير الجلسات</button>
+                    </div>
+                </div>
+
                 <div class="users-table">
                     <div class="table-header">
                         <div>المستخدم</div>
-                        <div>البريد</div>
+                        <div>البريد الإلكتروني</div>
+                        <div>الهاتف</div>
                         <div>الدور</div>
                         <div>الحالة</div>
-                        <div>الإجراءات</div>
+                        <div>الإجراءات المتقدمة</div>
                     </div>
-                    <div class="table-body">
-                        <!-- سيتم ملؤها بالبيانات -->
+                    <div class="table-body" id="admin-users-list">
+                        <!-- يتم تعبئته بالبيانات -->
                     </div>
                 </div>
             </div>
 
-            <!-- التقارير -->
-            <div id="admin-reports" class="admin-section hidden">
+            <!-- إدارة التخصصات الطبية الجديدة -->
+            <div id="admin-specialties" class="admin-section hidden">
                 <div class="section-header">
-                    <h2>📈 التقارير والإحصائيات</h2>
-                    <button class="export-btn" onclick="exportReports()">📄 تصدير التقارير</button>
+                    <h2>🎯 إدارة التخصصات الطبية</h2>
+                    <button class="add-btn" onclick="showAddSpecialtyForm()">➕ إضافة تخصص جديد</button>
                 </div>
-                
-                <div class="reports-dashboard">
-                    <div class="report-charts">
-                        <div class="chart-container">
-                            <h4>الإيرادات الشهرية</h4>
-                            <div class="chart" id="revenue-chart"></div>
+
+                <div class="specialties-grid" id="specialties-grid">
+                    <!-- شبكة التخصصات -->
+                </div>
+            </div>
+
+            <!-- التحكم في المظهر والعلامة -->
+            <div id="admin-appearance" class="admin-section hidden">
+                <div class="section-header">
+                    <h2>🎨 التحكم في مظهر التطبيق</h2>
+                </div>
+
+                <div class="appearance-controls">
+                    <div class="control-card">
+                        <h4>🏷️ معلومات التطبيق</h4>
+                        <div class="form-group">
+                            <label>اسم التطبيق:</label>
+                            <input type="text" id="app-name-input" value="تطبيق صحتي المتكامل">
+                            <button onclick="updateAppName()">💾 حفظ</button>
                         </div>
-                        <div class="chart-container">
-                            <h4>توزيع التخصصات</h4>
-                            <div class="chart" id="specialties-chart"></div>
+                        <div class="form-group">
+                            <label>وصف التطبيق:</label>
+                            <input type="text" id="app-desc-input" value="نظام إدارة المستشفيات والعيادات">
+                            <button onclick="updateAppDescription()">💾 حفظ</button>
+                        </div>
+                    </div>
+
+                    <div class="control-card">
+                        <h4>🎨 الألوان الرئيسية</h4>
+                        <div class="color-picker-grid">
+                            <div class="color-option">
+                                <label>اللون الأساسي:</label>
+                                <input type="color" id="primary-color" value="#3498db">
+                                <button onclick="updatePrimaryColor()">💾 تطبيق</button>
+                            </div>
+                            <div class="color-option">
+                                <label>لون الخلفية:</label>
+                                <input type="color" id="bg-color" value="#667eea">
+                                <button onclick="updateBackgroundColor()">💾 تطبيق</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-card">
+                        <h4>🖼️ الشعار والأيقونة</h4>
+                        <div class="logo-controls">
+                            <div class="logo-preview">
+                                <img id="logo-preview-img" src="" alt="معاينة الشعار">
+                                <span id="logo-status">لا يوجد شعار</span>
+                            </div>
+                            <input type="file" id="logo-upload" accept="image/*" onchange="previewLogo(this)">
+                            <button onclick="uploadLogo()">📤 رفع شعار جديد</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الذكاء الاصطناعي والنظام الآلي -->
+            <div id="admin-ai" class="admin-section hidden">
+                <div class="section-header">
+                    <h2>🤖 النظام الذكي والتحليلات</h2>
+                    <button class="ai-btn" onclick="trainAISystem()">🧠 تدريب النظام</button>
+                </div>
+
+                <div class="ai-dashboard">
+                    <div class="ai-stats" id="ai-stats">
+                        <div class="ai-stat-card">
+                            <h4>📈 ذكاء النظام</h4>
+                            <div class="ai-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 85%"></div>
+                                </div>
+                                <span>85%</span>
+                            </div>
+                        </div>
+                        <div class="ai-stat-card">
+                            <h4>🔍 دقة التنبؤات</h4>
+                            <div class="ai-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 92%"></div>
+                                </div>
+                                <span>92%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ai-features">
+                        <h4>🛠️ الميزات الذكية</h4>
+                        <div class="features-grid">
+                            <div class="feature-toggle">
+                                <label>التعلم الآلي التلقائي</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="ml-auto" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="feature-toggle">
+                                <label>التحليل التنبؤي</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="predictive-analysis" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="feature-toggle">
+                                <label>الكشف عن anomalies</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="anomaly-detection" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -221,6 +358,7 @@
                 <div class="user-info">
                     <span id="doctor-name">د. أحمد محمد</span>
                     <span class="user-role">طبيب - باطنية</span>
+                    <span class="session-status active">نشط</span>
                 </div>
             </div>
             <div class="header-right">
@@ -239,7 +377,7 @@
                     <div class="date-display" id="doctor-today-date"></div>
                 </div>
                 
-                <div class="appointments-list">
+                <div class="appointments-list" id="doctor-appointments-list">
                     <!-- سيتم ملؤها بالبيانات -->
                 </div>
             </div>
@@ -251,7 +389,18 @@
                     <button class="add-btn" onclick="showAddPatientForm()">➕ إضافة مريض</button>
                 </div>
                 
-                <div class="patients-grid">
+                <div class="patients-grid" id="doctor-patients-list">
+                    <!-- سيتم ملؤها بالبيانات -->
+                </div>
+            </div>
+
+            <!-- جدول الطبيب -->
+            <div id="doctor-schedule" class="doctor-section hidden">
+                <div class="section-header">
+                    <h2>🗓️ جدول المواعيد</h2>
+                    <button class="add-btn" onclick="addScheduleSlot()">➕ إضافة وقت</button>
+                </div>
+                <div class="schedule-container" id="doctor-schedule-container">
                     <!-- سيتم ملؤها بالبيانات -->
                 </div>
             </div>
@@ -266,6 +415,7 @@
                 <div class="user-info">
                     <span id="patient-name">محمد المريض</span>
                     <span class="user-role">مريض</span>
+                    <span class="session-status active">نشط</span>
                 </div>
             </div>
             <div class="header-right">
@@ -281,7 +431,7 @@
             <!-- مواعيد المريض -->
             <div id="patient-appointments" class="patient-section">
                 <h2>📅 مواعيدي القادمة</h2>
-                <div class="appointments-cards">
+                <div class="appointments-cards" id="patient-appointments-list">
                     <!-- سيتم ملؤها بالبيانات -->
                 </div>
                 
@@ -298,7 +448,7 @@
             <!-- الأطباء للمريض -->
             <div id="patient-doctors" class="patient-section hidden">
                 <h2>🩺 الأطباء المتاحين</h2>
-                <div class="doctors-grid">
+                <div class="doctors-grid" id="patient-doctors-list">
                     <!-- سيتم ملؤها بالبيانات -->
                 </div>
             </div>
@@ -310,7 +460,7 @@
                     <div class="map-view" id="patient-map">
                         <!-- خريطة جوجل -->
                     </div>
-                    <div class="clinics-list">
+                    <div class="clinics-list" id="patient-clinics-list">
                         <!-- قائمة العيادات -->
                     </div>
                 </div>
@@ -320,43 +470,174 @@
             <div id="patient-ai" class="patient-section hidden">
                 <h2>🤖 المساعد الطبي الذكي</h2>
                 <div class="ai-chat-container">
-                    <!-- محادثة الذكاء الاصطناعي -->
+                    <div class="chat-messages" id="ai-chat-messages">
+                        <div class="ai-message">
+                            <strong>المساعد:</strong> مرحباً! أنا المساعد الطبي الذكي. كيف يمكنني مساعدتك اليوم؟
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input-container">
+                        <input type="text" id="user-message" placeholder="اكتب سؤالك الطبي هنا..." 
+                               onkeypress="handleChatInput(event)">
+                        <button onclick="sendMessage()">📤 إرسال</button>
+                    </div>
+                </div>
+
+                <div class="quick-questions">
+                    <h4>أسئلة سريعة:</h4>
+                    <div class="quick-buttons">
+                        <button onclick="askQuickQuestion('أعاني من ألم في البطن، ماذا أفعل؟')">🤢 ألم البطن</button>
+                        <button onclick="askQuickQuestion('لدي حرارة مرتفعة، ما العلاج؟')">🌡️ الحرارة</button>
+                        <button onclick="askQuickQuestion('أشعر بدوار مستمر، ما السبب؟')">😵 الدوار</button>
+                        <button onclick="askQuickQuestion('لدي حساسية جلدية، ما الحل؟')">🔴 الحساسية</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- واجهة المحاسب -->
+    <!-- واجهة المحاسب الذكية المحدثة -->
     <div id="accountant-dashboard" class="dashboard hidden">
         <header class="dashboard-header">
             <div class="header-left">
-                <h1>💰 لوحة المحاسب</h1>
+                <h1>💰 لوحة المحاسب الذكية</h1>
                 <div class="user-info">
                     <span id="accountant-name">المحاسب العام</span>
-                    <span class="user-role">محاسب</span>
+                    <span class="user-role">محاسب ذكي</span>
+                    <span class="session-status active">نشط</span>
                 </div>
             </div>
             <div class="header-right">
-                <button class="header-btn" onclick="showAccountantSection('transactions')">💳 المعاملات</button>
-                <button class="header-btn" onclick="showAccountantSection('reports')">📊 التقارير</button>
-                <button class="header-btn" onclick="showAccountantSection('invoices')">🧾 الفواتير</button>
+                <button class="header-btn" onclick="showAccountantSection('transactions')">💳 المعاملات الذكية</button>
+                <button class="header-btn" onclick="showAccountantSection('ai-accounting')">🤖 المحاسبة الذكية</button>
+                <button class="header-btn" onclick="showAccountantSection('reports')">📊 التقارير الذكية</button>
+                <button class="header-btn" onclick="showAccountantSection('verification')">✅ التحقق الآلي</button>
                 <button class="header-btn logout-btn" onclick="logout()">🚪 خروج</button>
             </div>
         </header>
 
         <div class="dashboard-content">
-            <!-- المعاملات المالية -->
+            <!-- المعاملات الذكية -->
             <div id="accountant-transactions" class="accountant-section">
-                <h2>💳 المعاملات المالية</h2>
+                <div class="section-header">
+                    <h2>💳 المعاملات المالية الذكية</h2>
+                    <button class="ai-btn" onclick="aiAnalyzeTransactions()">🔍 التحليل الذكي</button>
+                </div>
+
+                <div class="ai-financial-alerts" id="financial-alerts">
+                    <!-- تنبيهات مالية ذكية -->
+                </div>
+
                 <div class="financial-stats">
-                    <!-- إحصائيات مالية -->
+                    <div class="financial-card income">
+                        <h3>إجمالي الإيرادات</h3>
+                        <p class="amount">250,000 ريال</p>
+                    </div>
+                    <div class="financial-card pending">
+                        <h3>المبالغ المعلقة</h3>
+                        <p class="amount">45,000 ريال</p>
+                    </div>
+                    <div class="financial-card expenses">
+                        <h3>المصروفات</h3>
+                        <p class="amount">120,000 ريال</p>
+                    </div>
+                </div>
+                <div class="transactions-list" id="accountant-transactions-list">
+                    <!-- سيتم ملؤها بالبيانات -->
+                </div>
+            </div>
+
+            <!-- المحاسبة الذكية -->
+            <div id="accountant-ai-accounting" class="accountant-section hidden">
+                <h2>🤖 المساعد الذكي للمحاسبة</h2>
+                <div class="ai-accounting-container">
+                    <div class="ai-chat-container">
+                        <div class="chat-messages" id="accounting-chat-messages">
+                            <div class="ai-message">
+                                <strong>المساعد المحاسبي:</strong> مرحباً! أنا المساعد الذكي للمحاسبة. يمكنني مساعدتك في:
+                                • التحقق من المعاملات
+                                • اكتشاف الأخطاء
+                                • تحليل الأنماط
+                                • التنبؤ بالإيرادات
+                                كيف يمكنني مساعدتك اليوم؟
+                            </div>
+                        </div>
+                        <div class="chat-input-container">
+                            <input type="text" id="accounting-message" 
+                                   placeholder="اسأل عن أي شيء محاسبي...">
+                            <button onclick="sendAccountingMessage()">📤 إرسال</button>
+                        </div>
+                    </div>
+
+                    <div class="ai-accounting-tools">
+                        <h4>🛠️ أدوات محاسبية ذكية</h4>
+                        <div class="tools-grid">
+                            <button class="tool-btn" onclick="aiVerifyTransactions()">✅ التحقق من المعاملات</button>
+                            <button class="tool-btn" onclick="aiDetectAnomalies()">🔍 كشف الشذوذ</button>
+                            <button class="tool-btn" onclick="aiPredictRevenue()">📈 توقع الإيرادات</button>
+                            <button class="tool-btn" onclick="aiGenerateReports()">📊 إنشاء تقارير</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- نظام التحقق الآلي -->
+            <div id="accountant-verification" class="accountant-section hidden">
+                <h2>✅ نظام التحقق الآلي من المعاملات</h2>
+                <div class="verification-system">
+                    <div class="verification-stats">
+                        <div class="verification-card verified">
+                            <h4>✅ معاملات مؤكدة</h4>
+                            <p class="count">145</p>
+                            <span>هذا الشهر</span>
+                        </div>
+                        <div class="verification-card pending">
+                            <h4>⏳ قيد المراجعة</h4>
+                            <p class="count">23</p>
+                            <span>تحتاج تحقق</span>
+                        </div>
+                        <div class="verification-card failed">
+                            <h4>❌ فاشلة</h4>
+                            <p class="count">5</p>
+                            <span>تحتاج تدخل</span>
+                        </div>
+                    </div>
+
+                    <div class="auto-verification-controls">
+                        <h4>⚙️ إعدادات التحقق الآلي</h4>
+                        <div class="verification-toggles">
+                            <div class="toggle-item">
+                                <label>التحقق التلقائي من المدفوعات</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="auto-payment-verify" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-item">
+                                <label>الكشف عن الاحتيال</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="fraud-detection" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-item">
+                                <label>التنبيهات الذكية</label>
+                                <label class="switch">
+                                    <input type="checkbox" id="smart-alerts" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- تحميل جميع ملفات الجافاسكريبت -->
+    <script src="js/session-manager.js"></script>
     <script src="js/app.js"></script>
-    <!-- رابط خرائط جوجل -->
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap&libraries=places"></script>
+    <script src="js/ai-system.js"></script>
+    <script src="js/admin-controls.js"></script>
 </body>
 </html>
