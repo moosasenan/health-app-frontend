@@ -3,377 +3,360 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق صحتي المتكامل - My Health App</title>
+    <title>تطبيق صحتي المتكامل - نظام إدارة المستشفيات</title>
     <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🏥 تطبيق صحتي المتكامل</h1>
-            <nav>
-                <a href="#" onclick="showSection('dashboard')">📊 لوحة التحكم</a>
-                <a href="#" onclick="showSection('patients')">👥 إدارة المرضى</a>
-                <a href="#" onclick="showSection('doctors')">👨‍⚕️ إدارة الأطباء</a>
-                <a href="#" onclick="showSection('appointments')">📅 إدارة المواعيد</a>
-                <a href="#" onclick="showSection('admin')">👑 الإدارة</a>
-                <a href="#" onclick="showSection('accounting')">💰 المحاسبة</a>
-                <a href="#" onclick="showSection('clinics')">🗺️ العيادات</a>
-                <a href="#" onclick="showSection('ai-assistant')">🤖 المساعد الذكي</a>
-                <a href="#" onclick="showSection('advanced-stats')">📊 الإحصائيات</a>
-            </nav>
-        </header>
-
-        <!-- لوحة التحكم -->
-        <section id="dashboard" class="section">
-            <h2>📊 لوحة التحكم الرئيسية</h2>
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <h3>👥 المرضى</h3>
-                    <p id="patients-count">0</p>
-                </div>
-                <div class="stat-card">
-                    <h3>🩺 الأطباء</h3>
-                    <p id="doctors-count">0</p>
-                </div>
-                <div class="stat-card">
-                    <h3>📅 المواعيد</h3>
-                    <p id="appointments-count">0</p>
-                </div>
-                <div class="stat-card">
-                    <h3>💰 الإيرادات</h3>
-                    <p id="revenue-count">0 ريال</p>
-                </div>
-            </div>
-
-            <div class="quick-actions">
-                <button onclick="showSection('patients')">➕ إضافة مريض</button>
-                <button onclick="showSection('doctors')">➕ إضافة طبيب</button>
-                <button onclick="showSection('appointments')">📅 حجز موعد</button>
-                <button onclick="showSection('ai-assistant')">🤖 مساعدة</button>
-            </div>
-        </section>
-
-        <!-- قسم المرضى -->
-        <section id="patients" class="section hidden">
-            <h2>👥 إدارة المرضى</h2>
-            
-            <div id="add-patient-form" class="hidden">
-                <h3>إضافة مريض جديد</h3>
-                <div class="form-group">
-                    <label for="patient-name">الاسم الكامل:</label>
-                    <input type="text" id="patient-name" placeholder="أدخل الاسم الكامل">
-                </div>
-                <div class="form-group">
-                    <label for="patient-phone">رقم الهاتف:</label>
-                    <input type="tel" id="patient-phone" placeholder="أدخل رقم الهاتف">
-                </div>
-                <div class="form-group">
-                    <label for="patient-city">المدينة:</label>
-                    <input type="text" id="patient-city" placeholder="أدخل المدينة">
-                </div>
-                <div class="form-group">
-                    <label for="patient-age">العمر:</label>
-                    <input type="number" id="patient-age" placeholder="أدخل العمر">
-                </div>
-                <button onclick="addPatient()">إضافة المريض</button>
-                <button onclick="hideForm('add-patient-form')" style="background: #6c757d;">إلغاء</button>
-            </div>
-
-            <div class="action-buttons">
-                <button onclick="showForm('add-patient-form')">➕ إضافة مريض جديد</button>
-                <button onclick="loadPatients()">🔄 تحديث القائمة</button>
-                <button onclick="exportPatients()">📄 تصدير البيانات</button>
+    <!-- شاشة تسجيل الدخول -->
+    <div id="login-page" class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <h1>🏥 تطبيق صحتي المتكامل</h1>
+                <p>نظام إدارة المستشفيات والعيادات</p>
             </div>
             
-            <div id="patients-list" class="data-list">
-                <!-- سيتم عرض المرضى هنا -->
-            </div>
-        </section>
-
-        <!-- قسم الأطباء -->
-        <section id="doctors" class="section hidden">
-            <h2>👨‍⚕️ إدارة الأطباء</h2>
-            
-            <div id="add-doctor-form" class="hidden">
-                <h3>إضافة طبيب جديد</h3>
-                <div class="form-group">
-                    <label for="doctor-name">اسم الطبيب:</label>
-                    <input type="text" id="doctor-name" placeholder="أدخل اسم الطبيب">
-                </div>
-                <div class="form-group">
-                    <label for="doctor-specialty">التخصص:</label>
-                    <select id="doctor-specialty">
-                        <option value="">اختر التخصص</option>
-                        <option value="باطنية">باطنية</option>
-                        <option value="قلب">قلب</option>
-                        <option value="عظام">عظام</option>
-                        <option value="أطفال">أطفال</option>
-                        <option value="نساء">نساء وتوليد</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="doctor-phone">رقم الهاتف:</label>
-                    <input type="tel" id="doctor-phone" placeholder="أدخل رقم الهاتف">
-                </div>
-                <div class="form-group">
-                    <label for="doctor-clinic">العيادة:</label>
-                    <input type="text" id="doctor-clinic" placeholder="أدخل اسم العيادة">
-                </div>
-                <div class="form-group">
-                    <label for="doctor-fees">الرسوم (ريال):</label>
-                    <input type="number" id="doctor-fees" placeholder="الرسوم بالريال">
-                </div>
-                <button onclick="addDoctor()">إضافة الطبيب</button>
-                <button onclick="hideForm('add-doctor-form')" style="background: #6c757d;">إلغاء</button>
-            </div>
-
-            <div class="action-buttons">
-                <button onclick="showForm('add-doctor-form')">➕ إضافة طبيب جديد</button>
-                <button onclick="loadDoctors()">🔄 تحديث القائمة</button>
-                <button onclick="showSection('clinics')">🏥 العيادات</button>
-            </div>
-            
-            <div id="doctors-list" class="data-list">
-                <!-- سيتم عرض الأطباء هنا -->
-            </div>
-        </section>
-
-        <!-- قسم المواعيد -->
-        <section id="appointments" class="section hidden">
-            <h2>📅 إدارة المواعيد</h2>
-            
-            <div id="add-appointment-form" class="hidden">
-                <h3>حجز موعد جديد</h3>
-                <div class="form-group">
-                    <label for="appointment-patient">المريض:</label>
-                    <select id="appointment-patient">
-                        <option value="">اختر المريض</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="appointment-doctor">الطبيب:</label>
-                    <select id="appointment-doctor">
-                        <option value="">اختر الطبيب</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="appointment-date">تاريخ الموعد:</label>
-                    <input type="date" id="appointment-date">
-                </div>
-                <div class="form-group">
-                    <label for="appointment-time">وقت الموعد:</label>
-                    <input type="time" id="appointment-time">
-                </div>
-                <div class="form-group">
-                    <label for="appointment-notes">ملاحظات:</label>
-                    <textarea id="appointment-notes" placeholder="أدخل أي ملاحظات"></textarea>
-                </div>
-                <button onclick="addAppointment()">حجز الموعد</button>
-                <button onclick="hideForm('add-appointment-form')" style="background: #6c757d;">إلغاء</button>
-            </div>
-
-            <div class="action-buttons">
-                <button onclick="showAppointmentForm()">➕ حجز موعد جديد</button>
-                <button onclick="loadAppointments()">🔄 تحديث القائمة</button>
-                <button onclick="showTodaysAppointments()">📅 مواعيد اليوم</button>
-            </div>
-            
-            <div id="appointments-list" class="data-list">
-                <!-- سيتم عرض المواعيد هنا -->
-            </div>
-        </section>
-
-        <!-- قسم الإدارة -->
-        <section id="admin" class="section hidden">
-            <h2>👑 لوحة الإدارة</h2>
-            
-            <div class="stats-grid">
-                <div class="stat-card admin-stat">
-                    <h3>👥 المستخدمين</h3>
-                    <p id="users-count">0</p>
-                </div>
-                <div class="stat-card admin-stat">
-                    <h3>🩺 الأطباء</h3>
-                    <p id="admin-doctors-count">0</p>
-                </div>
-                <div class="stat-card admin-stat">
-                    <h3>📅 المواعيد</h3>
-                    <p id="admin-appointments-count">0</p>
-                </div>
-                <div class="stat-card admin-stat">
-                    <h3>💰 الإيرادات</h3>
-                    <p id="admin-revenue-count">0 ريال</p>
-                </div>
-            </div>
-
-            <div class="admin-actions">
-                <button onclick="showForm('manage-users-form')">👥 إدارة المستخدمين</button>
-                <button onclick="showForm('manage-doctors-form')">🩺 إدارة الأطباء</button>
-                <button onclick="showForm('manage-clinics-form')">🏥 إدارة العيادات</button>
-                <button onclick="loadFinancialReports()">📊 التقارير المالية</button>
-                <button onclick="showSection('advanced-stats')">📈 الإحصائيات</button>
-            </div>
-
-            <!-- التقارير المالية -->
-            <div id="financial-reports" class="hidden">
-                <h3>📊 التقارير المالية</h3>
-                <div class="reports-grid">
-                    <div class="report-card">
-                        <h4>الإيرادات اليومية</h4>
-                        <p id="daily-revenue">0 ريال</p>
-                    </div>
-                    <div class="report-card">
-                        <h4>الإيرادات الشهرية</h4>
-                        <p id="monthly-revenue">0 ريال</p>
-                    </div>
-                    <div class="report-card">
-                        <h4>أعلى الأطباء ربحاً</h4>
-                        <p id="top-doctor">-</p>
+            <div class="login-form">
+                <h2>تسجيل الدخول</h2>
+                
+                <div class="demo-accounts">
+                    <h3>حسابات تجريبية جاهزة:</h3>
+                    <div class="account-cards">
+                        <div class="account-card admin" onclick="fillLogin('admin@sehati.com', '123456')">
+                            <div class="account-icon">👑</div>
+                            <div class="account-info">
+                                <strong>مدير النظام</strong>
+                                <span>admin@sehati.com</span>
+                            </div>
+                        </div>
+                        <div class="account-card doctor" onclick="fillLogin('doctor@sehati.com', '123456')">
+                            <div class="account-icon">🩺</div>
+                            <div class="account-info">
+                                <strong>طبيب</strong>
+                                <span>doctor@sehati.com</span>
+                            </div>
+                        </div>
+                        <div class="account-card patient" onclick="fillLogin('patient@sehati.com', '123456')">
+                            <div class="account-icon">👤</div>
+                            <div class="account-info">
+                                <strong>مريض</strong>
+                                <span>patient@sehati.com</span>
+                            </div>
+                        </div>
+                        <div class="account-card accountant" onclick="fillLogin('accountant@sehati.com', '123456')">
+                            <div class="account-icon">💰</div>
+                            <div class="account-info">
+                                <strong>محاسب</strong>
+                                <span>accountant@sehati.com</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
 
-        <!-- قسم المحاسبة -->
-        <section id="accounting" class="section hidden">
-            <h2>💰 النظام المالي</h2>
-            
-            <div class="accounting-stats">
-                <div class="accounting-card income">
-                    <h3>💰 الإيرادات</h3>
-                    <p id="total-income">0 ريال</p>
-                </div>
-                <div class="accounting-card pending">
-                    <h3>⏳ المعلقة</h3>
-                    <p id="pending-income">0 ريال</p>
-                </div>
-                <div class="accounting-card expenses">
-                    <h3>💸 المصروفات</h3>
-                    <p id="total-expenses">0 ريال</p>
-                </div>
-            </div>
-
-            <div class="transactions-section">
-                <h3>💳 آخر المعاملات</h3>
-                <div id="transactions-list" class="data-list"></div>
-            </div>
-
-            <div class="action-buttons">
-                <button onclick="generateFinancialReport()">📄 إنشاء تقرير مالي</button>
-                <button onclick="showPaymentForm()">💳 تسديد دفعة</button>
-                <button onclick="exportFinancialData()">📊 تصدير البيانات</button>
-            </div>
-        </section>
-
-        <!-- قسم العيادات -->
-        <section id="clinics" class="section hidden">
-            <h2>🗺️ العيادات والمراكز</h2>
-            
-            <div class="clinics-filter">
-                <input type="text" id="clinic-search" placeholder="🔍 ابحث عن عيادة أو مدينة" onkeyup="filterClinics()">
-                <select id="city-filter" onchange="filterClinics()">
-                    <option value="">جميع المدن</option>
-                </select>
-            </div>
-
-            <div id="clinics-map" class="map-container">
-                <div class="map-placeholder">
-                    <h3>🌍 خريطة العيادات</h3>
-                    <p>هنا سيتم عرض خريطة تفاعلية للعيادات</p>
-                    <button onclick="showMockMap()">🔄 عرض خريطة تجريبية</button>
-                </div>
-            </div>
-
-            <div id="clinics-list" class="clinics-grid">
-                <!-- سيتم عرض العيادات هنا -->
-            </div>
-        </section>
-
-        <!-- المساعد الطبي الذكي -->
-        <section id="ai-assistant" class="section hidden">
-            <h2>🤖 المساعد الطبي الذكي</h2>
-            
-            <div class="ai-chat-container">
-                <div id="chat-messages" class="chat-messages">
-                    <div class="ai-message">
-                        <strong>المساعد:</strong> مرحباً! أنا المساعد الطبي الذكي. كيف يمكنني مساعدتك اليوم؟
-                    </div>
+                <div class="form-group">
+                    <label for="login-email">البريد الإلكتروني:</label>
+                    <input type="email" id="login-email" placeholder="أدخل بريدك الإلكتروني">
                 </div>
                 
-                <div class="chat-input-container">
-                    <input type="text" id="user-message" placeholder="اكتب سؤالك الطبي هنا..." 
-                           onkeypress="handleChatInput(event)">
-                    <button onclick="sendMessage()">📤 إرسال</button>
+                <div class="form-group">
+                    <label for="login-password">كلمة المرور:</label>
+                    <input type="password" id="login-password" placeholder="أدخل كلمة المرور">
                 </div>
-            </div>
-
-            <div class="quick-questions">
-                <h4>أسئلة سريعة:</h4>
-                <div class="quick-buttons">
-                    <button onclick="askQuickQuestion('أعاني من ألم في البطن، ماذا أفعل؟')">🤢 ألم البطن</button>
-                    <button onclick="askQuickQuestion('لدي حرارة مرتفعة، ما العلاج؟')">🌡️ الحرارة</button>
-                    <button onclick="askQuickQuestion('أشعر بدوار مستمر، ما السبب؟')">😵 الدوار</button>
-                    <button onclick="askQuickQuestion('لدي حساسية جلدية، ما الحل؟')">🔴 الحساسية</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- قسم الإحصائيات المتقدمة -->
-        <section id="advanced-stats" class="section hidden">
-            <h2>📊 الإحصائيات المتقدمة</h2>
-            
-            <div class="charts-container">
-                <div class="chart-card">
-                    <h4>📈 توزيع التخصصات</h4>
-                    <div id="specialties-chart" class="chart">
-                        <div class="chart-bar" style="height: 80%">باطنية</div>
-                        <div class="chart-bar" style="height: 60%">قلب</div>
-                        <div class="chart-bar" style="height: 70%">عظام</div>
-                        <div class="chart-bar" style="height: 50%">أطفال</div>
-                    </div>
-                </div>
-                <div class="chart-card">
-                    <h4>📅 المواعيد الشهرية</h4>
-                    <div id="monthly-appointments-chart" class="chart">
-                        <div class="chart-bar" style="height: 40%">يناير</div>
-                        <div class="chart-bar" style="height: 60%">فبراير</div>
-                        <div class="chart-bar" style="height: 80%">مارس</div>
-                    </div>
-                </div>
-                <div class="chart-card">
-                    <h4>💰 الإيرادات</h4>
-                    <div id="revenue-chart" class="chart">
-                        <div class="chart-bar" style="height: 30%">الأسبوع 1</div>
-                        <div class="chart-bar" style="height: 50%">الأسبوع 2</div>
-                        <div class="chart-bar" style="height: 70%">الأسبوع 3</div>
+                
+                <button class="login-btn" onclick="handleLogin()">🚀 دخول للنظام</button>
+                
+                <div class="login-features">
+                    <h4>الميزات المتوفرة:</h4>
+                    <div class="features-grid">
+                        <div class="feature-item">✅ إدارة المرضى</div>
+                        <div class="feature-item">✅ إدارة الأطباء</div>
+                        <div class="feature-item">✅ نظام المواعيد</div>
+                        <div class="feature-item">✅ التقارير المالية</div>
+                        <div class="feature-item">✅ خرائط العيادات</div>
+                        <div class="feature-item">✅ المساعد الذكي</div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <div class="advanced-stats-grid">
-                <div class="advanced-stat">
-                    <h4>🏥 أكثر التخصصات طلباً</h4>
-                    <p id="top-specialty">باطنية</p>
-                </div>
-                <div class="advanced-stat">
-                    <h4>⭐ أعلى الأطباء تقييماً</h4>
-                    <p id="top-rated-doctor">د. أحمد محمد</p>
-                </div>
-                <div class="advanced-stat">
-                    <h4>📊 معدل الإشغال</h4>
-                    <p id="occupancy-rate">75%</p>
-                </div>
-                <div class="advanced-stat">
-                    <h4>📈 نمو المرضى</h4>
-                    <p id="growth-rate">+15%</p>
+    <!-- واجهة المدير -->
+    <div id="admin-dashboard" class="dashboard hidden">
+        <header class="dashboard-header">
+            <div class="header-left">
+                <h1>👑 لوحة إدارة النظام</h1>
+                <div class="user-info">
+                    <span id="admin-name">مدير النظام</span>
+                    <span class="user-role">مدير</span>
                 </div>
             </div>
-        </section>
+            <div class="header-right">
+                <button class="header-btn" onclick="showAdminSection('stats')">📊 الإحصائيات</button>
+                <button class="header-btn" onclick="showAdminSection('users')">👥 المستخدمين</button>
+                <button class="header-btn" onclick="showAdminSection('reports')">📈 التقارير</button>
+                <button class="header-btn logout-btn" onclick="logout()">🚪 خروج</button>
+            </div>
+        </header>
 
-        <!-- رسائل التنبيه -->
-        <div id="message"></div>
+        <div class="dashboard-content">
+            <!-- إحصائيات المدير -->
+            <div id="admin-stats" class="admin-section">
+                <div class="stats-grid">
+                    <div class="stat-card large">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-info">
+                            <h3>إجمالي المستخدمين</h3>
+                            <p class="stat-number">150</p>
+                            <span class="stat-change">+12 هذا الشهر</span>
+                        </div>
+                    </div>
+                    <div class="stat-card large">
+                        <div class="stat-icon">🩺</div>
+                        <div class="stat-info">
+                            <h3>الأطباء النشطين</h3>
+                            <p class="stat-number">45</p>
+                            <span class="stat-change">+5 هذا الشهر</span>
+                        </div>
+                    </div>
+                    <div class="stat-card large">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-info">
+                            <h3>المواعيد اليوم</h3>
+                            <p class="stat-number">89</p>
+                            <span class="stat-change">92% إشغال</span>
+                        </div>
+                    </div>
+                    <div class="stat-card large">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-info">
+                            <h3>الإيرادات الشهرية</h3>
+                            <p class="stat-number">125,000 ريال</p>
+                            <span class="stat-change">+18% عن الشهر الماضي</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-actions-grid">
+                    <div class="action-card" onclick="showAdminSection('users')">
+                        <div class="action-icon">👥</div>
+                        <h4>إدارة المستخدمين</h4>
+                        <p>إضافة، تعديل، حذف المستخدمين</p>
+                    </div>
+                    <div class="action-card" onclick="showAdminSection('doctors')">
+                        <div class="action-icon">🩺</div>
+                        <h4>إدارة الأطباء</h4>
+                        <p>إدارة بيانات الأطباء والتخصصات</p>
+                    </div>
+                    <div class="action-card" onclick="showAdminSection('clinics')">
+                        <div class="action-icon">🏥</div>
+                        <h4>إدارة العيادات</h4>
+                        <p>إدارة العيادات والمراكز الطبية</p>
+                    </div>
+                    <div class="action-card" onclick="showAdminSection('reports')">
+                        <div class="action-icon">📊</div>
+                        <h4>التقارير والإحصائيات</h4>
+                        <p>تقارير أداء وتحليلات متقدمة</p>
+                    </div>
+                    <div class="action-card" onclick="showAdminSection('financial')">
+                        <div class="action-icon">💳</div>
+                        <h4>الإدارة المالية</h4>
+                        <p>المعاملات والإيرادات والمصروفات</p>
+                    </div>
+                    <div class="action-card" onclick="showAdminSection('settings')">
+                        <div class="action-icon">⚙️</div>
+                        <h4>إعدادات النظام</h4>
+                        <p>إعدادات عامة وتخصيص النظام</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- إدارة المستخدمين -->
+            <div id="admin-users" class="admin-section hidden">
+                <div class="section-header">
+                    <h2>👥 إدارة المستخدمين</h2>
+                    <button class="add-btn" onclick="showAddUserForm()">➕ إضافة مستخدم</button>
+                </div>
+                
+                <div class="users-table">
+                    <div class="table-header">
+                        <div>المستخدم</div>
+                        <div>البريد</div>
+                        <div>الدور</div>
+                        <div>الحالة</div>
+                        <div>الإجراءات</div>
+                    </div>
+                    <div class="table-body">
+                        <!-- سيتم ملؤها بالبيانات -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- التقارير -->
+            <div id="admin-reports" class="admin-section hidden">
+                <div class="section-header">
+                    <h2>📈 التقارير والإحصائيات</h2>
+                    <button class="export-btn" onclick="exportReports()">📄 تصدير التقارير</button>
+                </div>
+                
+                <div class="reports-dashboard">
+                    <div class="report-charts">
+                        <div class="chart-container">
+                            <h4>الإيرادات الشهرية</h4>
+                            <div class="chart" id="revenue-chart"></div>
+                        </div>
+                        <div class="chart-container">
+                            <h4>توزيع التخصصات</h4>
+                            <div class="chart" id="specialties-chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- واجهة الطبيب -->
+    <div id="doctor-dashboard" class="dashboard hidden">
+        <header class="dashboard-header">
+            <div class="header-left">
+                <h1>🩺 لوحة الطبيب</h1>
+                <div class="user-info">
+                    <span id="doctor-name">د. أحمد محمد</span>
+                    <span class="user-role">طبيب - باطنية</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="header-btn" onclick="showDoctorSection('appointments')">📅 المواعيد</button>
+                <button class="header-btn" onclick="showDoctorSection('patients')">👥 المرضى</button>
+                <button class="header-btn" onclick="showDoctorSection('schedule')">🗓️ الجدول</button>
+                <button class="header-btn logout-btn" onclick="logout()">🚪 خروج</button>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <!-- مواعيد الطبيب -->
+            <div id="doctor-appointments" class="doctor-section">
+                <div class="section-header">
+                    <h2>📅 مواعيد اليوم</h2>
+                    <div class="date-display" id="doctor-today-date"></div>
+                </div>
+                
+                <div class="appointments-list">
+                    <!-- سيتم ملؤها بالبيانات -->
+                </div>
+            </div>
+
+            <!-- مرضى الطبيب -->
+            <div id="doctor-patients" class="doctor-section hidden">
+                <div class="section-header">
+                    <h2>👥 قائمة المرضى</h2>
+                    <button class="add-btn" onclick="showAddPatientForm()">➕ إضافة مريض</button>
+                </div>
+                
+                <div class="patients-grid">
+                    <!-- سيتم ملؤها بالبيانات -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- واجهة المريض -->
+    <div id="patient-dashboard" class="dashboard hidden">
+        <header class="dashboard-header">
+            <div class="header-left">
+                <h1>👤 لوحة المريض</h1>
+                <div class="user-info">
+                    <span id="patient-name">محمد المريض</span>
+                    <span class="user-role">مريض</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="header-btn" onclick="showPatientSection('appointments')">📅 مواعيدي</button>
+                <button class="header-btn" onclick="showPatientSection('doctors')">🩺 الأطباء</button>
+                <button class="header-btn" onclick="showPatientSection('clinics')">🏥 العيادات</button>
+                <button class="header-btn" onclick="showPatientSection('ai')">🤖 المساعد</button>
+                <button class="header-btn logout-btn" onclick="logout()">🚪 خروج</button>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <!-- مواعيد المريض -->
+            <div id="patient-appointments" class="patient-section">
+                <h2>📅 مواعيدي القادمة</h2>
+                <div class="appointments-cards">
+                    <!-- سيتم ملؤها بالبيانات -->
+                </div>
+                
+                <div class="quick-actions">
+                    <button class="action-btn primary" onclick="bookNewAppointment()">
+                        📅 حجز موعد جديد
+                    </button>
+                    <button class="action-btn" onclick="showPatientSection('doctors')">
+                        🩺 تصفح الأطباء
+                    </button>
+                </div>
+            </div>
+
+            <!-- الأطباء للمريض -->
+            <div id="patient-doctors" class="patient-section hidden">
+                <h2>🩺 الأطباء المتاحين</h2>
+                <div class="doctors-grid">
+                    <!-- سيتم ملؤها بالبيانات -->
+                </div>
+            </div>
+
+            <!-- العيادات للمريض -->
+            <div id="patient-clinics" class="patient-section hidden">
+                <h2>🏥 العيادات والمراكز</h2>
+                <div class="clinics-container">
+                    <div class="map-view" id="patient-map">
+                        <!-- خريطة جوجل -->
+                    </div>
+                    <div class="clinics-list">
+                        <!-- قائمة العيادات -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- المساعد الذكي -->
+            <div id="patient-ai" class="patient-section hidden">
+                <h2>🤖 المساعد الطبي الذكي</h2>
+                <div class="ai-chat-container">
+                    <!-- محادثة الذكاء الاصطناعي -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- واجهة المحاسب -->
+    <div id="accountant-dashboard" class="dashboard hidden">
+        <header class="dashboard-header">
+            <div class="header-left">
+                <h1>💰 لوحة المحاسب</h1>
+                <div class="user-info">
+                    <span id="accountant-name">المحاسب العام</span>
+                    <span class="user-role">محاسب</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="header-btn" onclick="showAccountantSection('transactions')">💳 المعاملات</button>
+                <button class="header-btn" onclick="showAccountantSection('reports')">📊 التقارير</button>
+                <button class="header-btn" onclick="showAccountantSection('invoices')">🧾 الفواتير</button>
+                <button class="header-btn logout-btn" onclick="logout()">🚪 خروج</button>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+            <!-- المعاملات المالية -->
+            <div id="accountant-transactions" class="accountant-section">
+                <h2>💳 المعاملات المالية</h2>
+                <div class="financial-stats">
+                    <!-- إحصائيات مالية -->
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="js/app.js"></script>
+    <!-- رابط خرائط جوجل -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap&libraries=places"></script>
 </body>
 </html>
