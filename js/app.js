@@ -40,7 +40,7 @@ function showMessage(message, type = 'success') {
     }, 5000);
 }
 
-// إدارة المرضى (باستخدام البيانات التجريبية)
+// إدارة المرضى
 function loadPatients() {
     const patientsList = document.getElementById('patients-list');
     patientsList.innerHTML = '';
@@ -106,18 +106,54 @@ function loadDoctors() {
     document.getElementById('doctors-count').textContent = mockData.doctors.length;
 }
 
+function addDoctor() {
+    const name = document.getElementById('doctor-name').value;
+    const specialty = document.getElementById('doctor-specialty').value;
+    const phone = document.getElementById('doctor-phone').value;
+    const clinic = document.getElementById('doctor-clinic').value;
+    
+    if (!name) {
+        showMessage('الرجاء إدخال اسم الطبيب', 'error');
+        return;
+    }
+    
+    // إضافة إلى البيانات التجريبية
+    const newDoctor = {
+        id: mockData.doctors.length + 1,
+        name: name,
+        specialty: specialty,
+        phone: phone,
+        clinic: clinic
+    };
+    
+    mockData.doctors.push(newDoctor);
+    showMessage('تم إضافة الطبيب بنجاح');
+    
+    // مسح الحقول
+    document.getElementById('doctor-name').value = '';
+    document.getElementById('doctor-specialty').value = '';
+    document.getElementById('doctor-phone').value = '';
+    document.getElementById('doctor-clinic').value = '';
+    
+    hideForm('add-doctor-form');
+    loadDoctors();
+}
+
 // إدارة المواعيد
 function loadAppointments() {
     const appointmentsList = document.getElementById('appointments-list');
     appointmentsList.innerHTML = '';
     
     mockData.appointments.forEach(appointment => {
+        const patient = mockData.patients.find(p => p.id === appointment.patient_id);
+        const doctor = mockData.doctors.find(d => d.id === appointment.doctor_id);
+        
         const appointmentDiv = document.createElement('div');
         appointmentDiv.className = 'data-item';
         appointmentDiv.innerHTML = `
             <strong>موعد</strong>
-            <br>المريض: ${mockData.patients.find(p => p.id === appointment.patient_id)?.full_name || 'غير معروف'}
-            <br>الطبيب: ${mockData.doctors.find(d => d.id === appointment.doctor_id)?.name || 'غير معروف'}
+            <br>المريض: ${patient ? patient.full_name : 'غير معروف'}
+            <br>الطبيب: ${doctor ? doctor.name : 'غير معروف'}
             <br>التاريخ: ${new Date(appointment.appointment_date).toLocaleString('ar-EG')}
             <br>ملاحظات: ${appointment.notes || 'لا يوجد'}
         `;
@@ -127,10 +163,72 @@ function loadAppointments() {
     document.getElementById('appointments-count').textContent = mockData.appointments.length;
 }
 
+function loadAppointmentForm() {
+    const patientSelect = document.getElementById('appointment-patient');
+    const doctorSelect = document.getElementById('appointment-doctor');
+    
+    // تحميل المرضى
+    patientSelect.innerHTML = '<option value="">اختر المريض</option>';
+    mockData.patients.forEach(patient => {
+        const option = document.createElement('option');
+        option.value = patient.id;
+        option.textContent = patient.full_name;
+        patientSelect.appendChild(option);
+    });
+    
+    // تحميل الأطباء
+    doctorSelect.innerHTML = '<option value="">اختر الطبيب</option>';
+    mockData.doctors.forEach(doctor => {
+        const option = document.createElement('option');
+        option.value = doctor.id;
+        option.textContent = doctor.name;
+        doctorSelect.appendChild(option);
+    });
+}
+
+function showAppointmentForm() {
+    loadAppointmentForm();
+    showForm('add-appointment-form');
+}
+
+function addAppointment() {
+    const patientId = document.getElementById('appointment-patient').value;
+    const doctorId = document.getElementById('appointment-doctor').value;
+    const date = document.getElementById('appointment-date').value;
+    const notes = document.getElementById('appointment-notes').value;
+    
+    if (!patientId || !doctorId || !date) {
+        showMessage('الرجاء ملء جميع الحقول المطلوبة', 'error');
+        return;
+    }
+    
+    // إضافة إلى البيانات التجريبية
+    const newAppointment = {
+        id: mockData.appointments.length + 1,
+        patient_id: parseInt(patientId),
+        doctor_id: parseInt(doctorId),
+        appointment_date: date,
+        notes: notes
+    };
+    
+    mockData.appointments.push(newAppointment);
+    showMessage('تم حجز الموعد بنجاح');
+    
+    // مسح الحقول
+    document.getElementById('appointment-patient').value = '';
+    document.getElementById('appointment-doctor').value = '';
+    document.getElementById('appointment-date').value = '';
+    document.getElementById('appointment-notes').value = '';
+    
+    hideForm('add-appointment-form');
+    loadAppointments();
+}
+
 // تحميل البيانات عند فتح الصفحة
 document.addEventListener('DOMContentLoaded', function() {
     showSection('dashboard');
     loadPatients();
     loadDoctors();
     loadAppointments();
+    loadAppointmentForm();
 });
