@@ -1,4 +1,10 @@
-// نظام إدارة الجلسات والتهيئة التلقائية
+/**
+ * نظام إدارة الجلسات والتهيئة التلقائية
+ * ✅ إدارة جلسات المستخدمين
+ * ✅ تتبع النشاطات والأمان
+ * ✅ حفظ الإحصائيات والتقارير
+ */
+
 class SessionManager {
     constructor() {
         this.SESSION_KEYS = {
@@ -7,9 +13,17 @@ class SessionManager {
             LANGUAGE: 'appLanguage',
             USER_ACTIVITIES: 'userActivities',
             APP_STATISTICS: 'appStatistics',
-            ONLINE_USERS: 'onlineUsers'
+            ONLINE_USERS: 'onlineUsers',
+            PAYMENT_METHODS: 'paymentMethods'
         };
         this.currentUser = null;
+        this.init();
+    }
+
+    // تهيئة النظام
+    init() {
+        console.log('✅ نظام إدارة الجلسات جاهز');
+        this.loadSessions();
     }
 
     // حفظ جلسة المستخدم
@@ -134,7 +148,7 @@ class SessionManager {
                 action: action,
                 description: description,
                 timestamp: new Date().toISOString(),
-                ip: '127.0.0.1', // في التطبيق الحقيقي، سيتم الحصول على IP الفعلي
+                ip: '127.0.0.1',
                 userAgent: navigator.userAgent
             };
             
@@ -192,7 +206,14 @@ class SessionManager {
     loadAppStatistics() {
         try {
             const stats = localStorage.getItem(this.SESSION_KEYS.APP_STATISTICS);
-            return stats ? JSON.parse(stats) : null;
+            return stats ? JSON.parse(stats) : {
+                totalUsers: 0,
+                totalDoctors: 0,
+                totalPatients: 0,
+                totalAppointments: 0,
+                monthlyRevenue: 0,
+                activeUsers: 0
+            };
         } catch (error) {
             console.error('❌ خطأ في تحميل الإحصائيات:', error);
             return null;
@@ -201,15 +222,11 @@ class SessionManager {
 
     // تحديث إحصائيات الجلسات
     updateSessionStats() {
-        const stats = this.loadAppStatistics() || {
-            totalLogins: 0,
-            totalSessions: 0,
-            averageSessionTime: 0,
-            activeSessions: 0
-        };
+        const stats = this.loadAppStatistics();
         
-        stats.totalSessions++;
+        stats.totalSessions = (stats.totalSessions || 0) + 1;
         stats.activeSessions = JSON.parse(localStorage.getItem(this.SESSION_KEYS.ONLINE_USERS) || '[]').length;
+        stats.lastUpdate = new Date().toISOString();
         
         this.saveAppStatistics(stats);
         return stats;
@@ -229,12 +246,6 @@ class SessionManager {
             return false;
         }
         
-        // التحقق من أن كلمة المرور لم تتغير (محاكاة)
-        if (userExists.requiresPasswordChange) {
-            showNotification('يجب تغيير كلمة المرور', 'warning');
-            return false;
-        }
-        
         return true;
     }
 
@@ -245,14 +256,67 @@ class SessionManager {
 
         const loginTime = new Date(session.loginTime);
         const now = new Date();
-        const sessionDuration = Math.floor((now - loginTime) / (1000 * 60)); // بالدقائق
+        const sessionDuration = Math.floor((now - loginTime) / (1000 * 60));
 
         return {
             user: session,
             sessionId: session.sessionId,
             duration: sessionDuration,
-            isExpired: sessionDuration > 1440 // 24 ساعة
+            isExpired: sessionDuration > 1440
         };
+    }
+
+    // إدارة طرق الدفع
+    getPaymentMethods() {
+        try {
+            const methods = localStorage.getItem(this.SESSION_KEYS.PAYMENT_METHODS);
+            return methods ? JSON.parse(methods) : [
+                { id: 1, name: 'الدفع نقداً', enabled: true, description: 'الدفع المباشر في العيادة' },
+                { id: 2, name: 'بطاقة ائتمان', enabled: true, description: 'الدفع ببطاقات الائتمان' },
+                { id: 3, name: 'تحويل بنكي', enabled: true, description: 'التحويل البنكي المباشر' },
+                { id: 4, name: 'محفظة إلكترونية', enabled: false, description: 'الدفع عبر المحافظ الإلكترونية' }
+            ];
+        } catch (error) {
+            console.error('❌ خطأ في تحميل طرق الدفع:', error);
+            return [];
+        }
+    }
+
+    savePaymentMethods(methods) {
+        try {
+            localStorage.setItem(this.SESSION_KEYS.PAYMENT_METHODS, JSON.stringify(methods));
+            console.log('✅ تم حفظ طرق الدفع بنجاح');
+            return true;
+        } catch (error) {
+            console.error('❌ خطأ في حفظ طرق الدفع:', error);
+            return false;
+        }
+    }
+
+    // تحديث إحصائيات المستخدمين
+    updateUserStatistics() {
+        const users = window.users || [];
+        const stats = this.loadAppStatistics();
+        
+        stats.totalUsers = users.length;
+        stats.totalDoctors = users.filter(u => u.role === 'doctor').length;
+        stats.totalPatients = users.filter(u => u.role === 'patient').length;
+        stats.totalAppointments = window.appData?.appointments?.length || 0;
+        stats.monthlyRevenue = this.calculateMonthlyRevenue();
+        stats.activeUsers = JSON.parse(localStorage.getItem(this.SESSION_KEYS.ONLINE_USERS) || '[]').length;
+        
+        this.saveAppStatistics(stats);
+        return stats;
+    }
+
+    // حساب الإيرادات الشهرية
+    calculateMonthlyRevenue() {
+        const transactions = window.appData?.transactions || [];
+        const currentMonth = new Date().toISOString().substr(0, 7); // YYYY-MM
+        
+        return transactions
+            .filter(t => t.date && t.date.startsWith(currentMonth) && t.type === 'دخل' && t.status === 'مكتمل')
+            .reduce((sum, t) => sum + (t.amount || 0), 0);
     }
 
     // إنهاء جميع الجلسات
@@ -268,37 +332,26 @@ class SessionManager {
         }
     }
 
-    // نسخ احتياطي للبيانات
-    backupData() {
+    // تحميل الجلسات
+    loadSessions() {
         try {
-            const backup = {
-                users: JSON.parse(localStorage.getItem('systemUsers') || '[]'),
-                activities: JSON.parse(localStorage.getItem(this.SESSION_KEYS.USER_ACTIVITIES) || '[]'),
+            const sessions = {
+                currentUser: this.loadUserSession(),
+                paymentMethods: this.getPaymentMethods(),
                 statistics: this.loadAppStatistics(),
-                timestamp: new Date().toISOString()
+                onlineUsers: JSON.parse(localStorage.getItem(this.SESSION_KEYS.ONLINE_USERS) || '[]')
             };
             
-            return JSON.stringify(backup);
-        } catch (error) {
-            console.error('❌ خطأ في إنشاء النسخ الاحتياطي:', error);
-            return null;
-        }
-    }
-
-    // استعادة البيانات من النسخ الاحتياطي
-    restoreData(backupData) {
-        try {
-            const backup = JSON.parse(backupData);
+            console.log('📊 حالة النظام:', {
+                usersOnline: sessions.onlineUsers.length,
+                currentUser: sessions.currentUser?.name,
+                paymentMethods: sessions.paymentMethods.length
+            });
             
-            if (backup.users) localStorage.setItem('systemUsers', JSON.stringify(backup.users));
-            if (backup.activities) localStorage.setItem(this.SESSION_KEYS.USER_ACTIVITIES, JSON.stringify(backup.activities));
-            if (backup.statistics) this.saveAppStatistics(backup.statistics);
-            
-            console.log('✅ تم استعادة البيانات بنجاح');
-            return true;
+            return sessions;
         } catch (error) {
-            console.error('❌ خطأ في استعادة البيانات:', error);
-            return false;
+            console.error('❌ خطأ في تحميل الجلسات:', error);
+            return {};
         }
     }
 }
@@ -331,11 +384,27 @@ function getUserActivities(userId, limit = 50) {
     return sessionManager.getUserActivities(userId, limit);
 }
 
+function getAllActivities(limit = 100) {
+    return sessionManager.getAllActivities(limit);
+}
+
 function isUserOnline(userId) {
     return sessionManager.isUserOnline(userId);
 }
 
-// تصدير المدير للاستخدام في الملفات الأخرى
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = sessionManager;
+function getPaymentMethods() {
+    return sessionManager.getPaymentMethods();
 }
+
+function savePaymentMethods(methods) {
+    return sessionManager.savePaymentMethods(methods);
+}
+
+function updateUserStatistics() {
+    return sessionManager.updateUserStatistics();
+}
+
+// جعل المدير متاحاً globally
+window.sessionManager = sessionManager;
+
+console.log('✅ نظام إدارة الجلسات تم تحميله بنجاح');
