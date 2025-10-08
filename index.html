@@ -47,7 +47,7 @@
         
         <div class="header">
             <h1 id="login-title">تسجيل الدخول</h1>
-            <p id="login-subtitle">اهلاً بك! سجل دخولك أو أنشئ حساب جديد</p>
+            <p id="login-subtitle">أهلاً بك! سجل دخولك أو أنشئ حساب جديد</p>
         </div>
 
         <div class="auth-tabs">
@@ -56,64 +56,99 @@
         </div>
 
         <!-- نموذج تسجيل الدخول -->
-        <div id="login-form" class="auth-form">
-            <input type="email" id="login-email" placeholder="البريد الإلكتروني" required>
-            <input type="password" id="login-password" placeholder="كلمة المرور" required>
+        <form id="login-form" class="auth-form" onsubmit="handleLogin(event)">
+            <div class="input-group">
+                <input type="email" id="login-email" placeholder="البريد الإلكتروني" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="login-password" placeholder="كلمة المرور" required>
+            </div>
             
             <div class="form-options">
-                <label>
+                <label class="checkbox-label">
                     <input type="checkbox" id="remember-me">
+                    <span class="checkmark"></span>
                     تذكرني
                 </label>
                 <a href="#" class="forgot-password">نسيت كلمة المرور؟</a>
             </div>
             
-            <button class="btn primary" onclick="handleLogin()">تسجيل الدخول</button>
-        </div>
+            <button type="submit" class="btn primary">تسجيل الدخول</button>
+        </form>
 
         <!-- نموذج إنشاء حساب -->
-        <div id="register-form" class="auth-form hidden">
+        <form id="register-form" class="auth-form hidden" onsubmit="handleRegistration(event)">
             <!-- الحقول الأساسية -->
-            <input type="text" id="register-name" placeholder="الاسم الكامل" required>
-            <input type="number" id="register-age" placeholder="العمر" required>
-            <input type="tel" id="register-phone" placeholder="رقم الهاتف" required>
-            <input type="email" id="register-email" placeholder="البريد الإلكتروني" required>
-            <input type="password" id="register-password" placeholder="كلمة المرور" required>
-            <input type="password" id="register-confirm-password" placeholder="تأكيد كلمة المرور" required>
+            <div class="input-group">
+                <input type="text" id="register-name" placeholder="الاسم الكامل" required>
+            </div>
+            <div class="input-group">
+                <input type="number" id="register-age" placeholder="العمر" min="1" max="120" required>
+            </div>
+            <div class="input-group">
+                <input type="tel" id="register-phone" placeholder="رقم الهاتف" required>
+            </div>
+            <div class="input-group">
+                <input type="email" id="register-email" placeholder="البريد الإلكتروني" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="register-password" placeholder="كلمة المرور" minlength="6" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="register-confirm-password" placeholder="تأكيد كلمة المرور" required>
+            </div>
 
             <!-- الحقول الإضافية للطبيب -->
-            <div id="doctor-extra-fields" class="hidden">
-                <input type="text" id="doctor-specialty" placeholder="التخصص الطبي">
-                <input type="text" id="doctor-clinic" placeholder="اسم العيادة">
-                <input type="text" id="doctor-qualification" placeholder="المؤهل العلمي">
-                <input type="number" id="doctor-experience" placeholder="سنوات الخبرة">
-                <textarea id="doctor-description" placeholder="وصف مختصر"></textarea>
-                <input type="number" id="doctor-fees" placeholder="رسوم الكشف" value="150">
+            <div id="doctor-extra-fields" class="hidden extra-fields">
+                <div class="input-group">
+                    <input type="text" id="doctor-specialty" placeholder="التخصص الطبي" required>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="doctor-clinic" placeholder="اسم العيادة">
+                </div>
+                <div class="input-group">
+                    <input type="text" id="doctor-qualification" placeholder="المؤهل العلمي" required>
+                </div>
+                <div class="input-group">
+                    <input type="number" id="doctor-experience" placeholder="سنوات الخبرة" min="0">
+                </div>
+                <div class="input-group">
+                    <textarea id="doctor-description" placeholder="وصف مختصر عن الخبرات"></textarea>
+                </div>
+                <div class="input-group">
+                    <input type="number" id="doctor-fees" placeholder="رسوم الكشف" value="150" min="0">
+                </div>
             </div>
 
             <!-- الحقول الإضافية للمريض -->
-            <div id="patient-extra-fields" class="hidden">
-                <select id="patient-gender" required>
-                    <option value="">اختر الجنس</option>
-                    <option value="ذكر">ذكر</option>
-                    <option value="أنثى">أنثى</option>
-                </select>
-                <input type="text" id="patient-city" placeholder="المدينة">
-                <select id="patient-blood-type">
-                    <option value="">فصيلة الدم</option>
-                    <option value="A+">A+</option>
-                    <option value="A-">A-</option>
-                    <option value="B+">B+</option>
-                    <option value="B-">B-</option>
-                    <option value="O+">O+</option>
-                    <option value="O-">O-</option>
-                    <option value="AB+">AB+</option>
-                    <option value="AB-">AB-</option>
-                </select>
+            <div id="patient-extra-fields" class="hidden extra-fields">
+                <div class="input-group">
+                    <select id="patient-gender" required>
+                        <option value="">اختر الجنس</option>
+                        <option value="ذكر">ذكر</option>
+                        <option value="أنثى">أنثى</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <input type="text" id="patient-city" placeholder="المدينة">
+                </div>
+                <div class="input-group">
+                    <select id="patient-blood-type">
+                        <option value="">فصيلة الدم</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                    </select>
+                </div>
             </div>
 
-            <button class="btn primary" onclick="handleRegistration()">إنشاء حساب</button>
-        </div>
+            <button type="submit" class="btn primary">إنشاء حساب</button>
+        </form>
     </div>
 
     <!-- لوحة المدير -->
@@ -137,32 +172,43 @@
 
         <div class="dashboard-content">
             <!-- قسم الإحصائيات -->
-            <div id="admin-stats">
+            <div id="admin-stats" class="dashboard-section">
+                <div class="section-header">
+                    <h3>نظرة عامة على النظام</h3>
+                </div>
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <h3>👥 إجمالي المستخدمين</h3>
+                        <div class="stat-icon">👥</div>
+                        <h3>إجمالي المستخدمين</h3>
                         <p class="stat-number">150</p>
+                        <span class="stat-change positive">+12 هذا الشهر</span>
                     </div>
                     <div class="stat-card">
-                        <h3>🩺 عدد الأطباء</h3>
+                        <div class="stat-icon">🩺</div>
+                        <h3>عدد الأطباء</h3>
                         <p class="stat-number">25</p>
+                        <span class="stat-change positive">+2 هذا الشهر</span>
                     </div>
                     <div class="stat-card">
-                        <h3>📅 المواعيد اليوم</h3>
+                        <div class="stat-icon">📅</div>
+                        <h3>المواعيد اليوم</h3>
                         <p class="stat-number">45</p>
+                        <span class="stat-change">مقارنة بالأمس</span>
                     </div>
                     <div class="stat-card">
-                        <h3>💰 الإيرادات</h3>
+                        <div class="stat-icon">💰</div>
+                        <h3>الإيرادات</h3>
                         <p class="stat-number">12,500 ر.ي</p>
+                        <span class="stat-change positive">+15% عن الشهر الماضي</span>
                     </div>
                 </div>
             </div>
 
             <!-- قسم المستخدمين -->
-            <div id="admin-users" class="hidden">
+            <div id="admin-users" class="dashboard-section hidden">
                 <div class="section-header">
                     <h3>إدارة المستخدمين</h3>
-                    <button class="btn primary">➕ إضافة مستخدم</button>
+                    <button class="btn primary" onclick="showAddUserModal()">➕ إضافة مستخدم</button>
                 </div>
                 <div class="table-container">
                     <div class="table-header">
@@ -180,15 +226,32 @@
             </div>
 
             <!-- قسم الأطباء -->
-            <div id="admin-doctors" class="hidden">
-                <h3>إدارة الأطباء</h3>
-                <!-- محتوى إدارة الأطباء -->
+            <div id="admin-doctors" class="dashboard-section hidden">
+                <div class="section-header">
+                    <h3>إدارة الأطباء</h3>
+                    <button class="btn primary">➕ إضافة طبيب</button>
+                </div>
+                <div class="cards-grid" id="admin-doctors-list">
+                    <!-- سيتم ملؤها بالبيانات -->
+                </div>
             </div>
 
             <!-- قسم العيادات -->
-            <div id="admin-clinics" class="hidden">
+            <div id="admin-clinics" class="dashboard-section hidden">
                 <h3>إدارة العيادات</h3>
-                <!-- محتوى إدارة العيادات -->
+                <p>محتوى إدارة العيادات سيظهر هنا</p>
+            </div>
+
+            <!-- قسم المالية -->
+            <div id="admin-financial" class="dashboard-section hidden">
+                <h3>الإدارة المالية</h3>
+                <p>محتوى الإدارة المالية سيظهر هنا</p>
+            </div>
+
+            <!-- قسم التقارير -->
+            <div id="admin-reports" class="dashboard-section hidden">
+                <h3>التقارير والإحصائيات</h3>
+                <p>محتوى التقارير سيظهر هنا</p>
             </div>
         </div>
     </div>
@@ -212,9 +275,14 @@
 
         <div class="dashboard-content">
             <!-- قسم المواعيد -->
-            <div id="doctor-appointments">
+            <div id="doctor-appointments" class="dashboard-section">
                 <div class="section-header">
-                    <h3>مواعيد اليوم <span id="doctor-today-date"></span></h3>
+                    <h3>مواعيد اليوم <span id="doctor-today-date" class="date-badge"></span></h3>
+                    <div class="appointment-filters">
+                        <button class="btn secondary active">جميع المواعيد</button>
+                        <button class="btn secondary">المؤكدة</button>
+                        <button class="btn secondary">قيد الانتظار</button>
+                    </div>
                 </div>
                 <div id="doctor-appointments-list" class="cards-grid">
                     <!-- سيتم ملؤها بالبيانات -->
@@ -222,23 +290,38 @@
             </div>
 
             <!-- قسم المرضى -->
-            <div id="doctor-patients" class="hidden">
-                <h3>المرضى</h3>
+            <div id="doctor-patients" class="dashboard-section hidden">
+                <div class="section-header">
+                    <h3>قائمة المرضى</h3>
+                    <div class="search-box">
+                        <input type="text" placeholder="بحث عن مريض...">
+                        <button class="btn secondary">بحث</button>
+                    </div>
+                </div>
                 <div id="doctor-patients-list" class="cards-grid">
                     <!-- سيتم ملؤها بالبيانات -->
                 </div>
             </div>
 
             <!-- قسم الجدول -->
-            <div id="doctor-schedule" class="hidden">
+            <div id="doctor-schedule" class="dashboard-section hidden">
                 <h3>جدول المواعيد</h3>
-                <!-- محتوى الجدول -->
+                <p>محتوى الجدول سيظهر هنا</p>
             </div>
 
             <!-- قسم الملف الشخصي -->
-            <div id="doctor-profile" class="hidden">
-                <div id="doctor-profile-container">
-                    <!-- سيتم ملؤها بالبيانات -->
+            <div id="doctor-profile" class="dashboard-section hidden">
+                <div class="profile-container">
+                    <div class="profile-header">
+                        <div class="profile-avatar">د</div>
+                        <div class="profile-info">
+                            <h3 id="doctor-profile-name">د. أحمد محمد</h3>
+                            <p id="doctor-profile-specialty">طبيب باطنية</p>
+                        </div>
+                    </div>
+                    <div class="profile-details">
+                        <!-- سيتم ملؤها بالبيانات -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -264,10 +347,10 @@
 
         <div class="dashboard-content">
             <!-- قسم المواعيد -->
-            <div id="patient-appointments">
+            <div id="patient-appointments" class="dashboard-section">
                 <div class="section-header">
-                    <h3>مواعيدي</h3>
-                    <button class="btn primary" onclick="bookNewAppointment()">➕ حجز موعد جديد</button>
+                    <h3>مواعيدي القادمة</h3>
+                    <button class="btn primary" onclick="showBookAppointmentModal()">➕ حجز موعد جديد</button>
                 </div>
                 <div id="patient-appointments-list" class="cards-grid">
                     <!-- سيتم ملؤها بالبيانات -->
@@ -275,47 +358,67 @@
             </div>
 
             <!-- قسم الأطباء -->
-            <div id="patient-doctors" class="hidden">
-                <h3>الأطباء المتاحين</h3>
+            <div id="patient-doctors" class="dashboard-section hidden">
+                <div class="section-header">
+                    <h3>الأطباء المتاحين</h3>
+                    <div class="search-box">
+                        <input type="text" placeholder="بحث عن طبيب...">
+                        <select id="specialty-filter">
+                            <option value="">جميع التخصصات</option>
+                            <option value="باطنية">باطنية</option>
+                            <option value="جراحة">جراحة</option>
+                            <option value="أطفال">أطفال</option>
+                        </select>
+                    </div>
+                </div>
                 <div id="patient-doctors-list" class="cards-grid">
                     <!-- سيتم ملؤها بالبيانات -->
                 </div>
             </div>
 
             <!-- قسم العيادات -->
-            <div id="patient-clinics" class="hidden">
+            <div id="patient-clinics" class="dashboard-section hidden">
                 <h3>العيادات والمستشفيات</h3>
                 <div id="patient-clinics-list" class="cards-grid">
                     <!-- سيتم ملؤها بالبيانات -->
                 </div>
             </div>
 
-            <!-- قسم الخرائط -->
-            <div id="patient-map" class="hidden">
-                <h3>🗺️ خرائط العيادات</h3>
-                <!-- سيتم ملؤها بالخريطة -->
-            </div>
-
             <!-- قسم المساعد الطبي -->
-            <div id="patient-ai" class="hidden">
-                <h3>🤖 المساعد الطبي الذكي</h3>
+            <div id="patient-ai" class="dashboard-section hidden">
+                <div class="section-header">
+                    <h3>🤖 المساعد الطبي الذكي</h3>
+                </div>
                 <div class="ai-chat-container">
-                    <div class="ai-messages">
+                    <div class="ai-messages" id="ai-chat-messages">
                         <div class="ai-message bot">
-                            <p>مرحباً! أنا المساعد الطبي الذكي. كيف يمكنني مساعدتك اليوم؟</p>
+                            <div class="message-avatar">🤖</div>
+                            <div class="message-content">
+                                <p>مرحباً! أنا المساعد الطبي الذكي. كيف يمكنني مساعدتك اليوم؟</p>
+                                <span class="message-time">الآن</span>
+                            </div>
                         </div>
                     </div>
                     <div class="ai-input">
-                        <input type="text" placeholder="اكتب سؤالك الطبي هنا...">
-                        <button class="btn primary">إرسال</button>
+                        <input type="text" id="ai-chat-input" placeholder="اكتب سؤالك الطبي هنا...">
+                        <button class="btn primary" onclick="sendAIMessage()">إرسال</button>
                     </div>
                 </div>
             </div>
 
             <!-- قسم الملف الشخصي -->
-            <div id="patient-profile" class="hidden">
-                <div id="patient-profile-container">
-                    <!-- سيتم ملؤها بالبيانات -->
+            <div id="patient-profile" class="dashboard-section hidden">
+                <div class="profile-container">
+                    <div class="profile-header">
+                        <div class="profile-avatar">م</div>
+                        <div class="profile-info">
+                            <h3 id="patient-profile-name">محمد المريض</h3>
+                            <p>مريض</p>
+                        </div>
+                    </div>
+                    <div class="profile-details">
+                        <!-- سيتم ملؤها بالبيانات -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -339,26 +442,33 @@
 
         <div class="dashboard-content">
             <!-- قسم المعاملات -->
-            <div id="accountant-transactions">
+            <div id="accountant-transactions" class="dashboard-section">
                 <div class="section-header">
                     <h3>المعاملات المالية</h3>
-                    <div class="financial-stats">
-                        <div class="stat-card">
-                            <h4>إجمالي الدخل</h4>
-                            <p id="total-income">0 ر.ي</p>
-                        </div>
-                        <div class="stat-card">
-                            <h4>إجمالي المصروفات</h4>
-                            <p id="total-expenses">0 ر.ي</p>
-                        </div>
-                        <div class="stat-card">
-                            <h4>صافي الربح</h4>
-                            <p id="net-profit">0 ر.ي</p>
-                        </div>
-                        <div class="stat-card">
-                            <h4>الدخل المعلق</h4>
-                            <p id="pending-income">0 ر.ي</p>
-                        </div>
+                    <div class="date-filter">
+                        <input type="date" id="transactions-date-from">
+                        <span>إلى</span>
+                        <input type="date" id="transactions-date-to">
+                        <button class="btn secondary">تطبيق</button>
+                    </div>
+                </div>
+                
+                <div class="financial-stats">
+                    <div class="stat-card">
+                        <h4>إجمالي الدخل</h4>
+                        <p id="total-income">0 ر.ي</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>إجمالي المصروفات</h4>
+                        <p id="total-expenses">0 ر.ي</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>صافي الربح</h4>
+                        <p id="net-profit">0 ر.ي</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>الدخل المعلق</h4>
+                        <p id="pending-income">0 ر.ي</p>
                     </div>
                 </div>
                 
@@ -380,15 +490,15 @@
             </div>
 
             <!-- قسم التقارير -->
-            <div id="accountant-reports" class="hidden">
+            <div id="accountant-reports" class="dashboard-section hidden">
                 <h3>التقارير المالية</h3>
-                <!-- محتوى التقارير -->
+                <p>محتوى التقارير سيظهر هنا</p>
             </div>
 
             <!-- قسم الفواتير -->
-            <div id="accountant-invoices" class="hidden">
+            <div id="accountant-invoices" class="dashboard-section hidden">
                 <h3>إدارة الفواتير</h3>
-                <!-- محتوى الفواتير -->
+                <p>محتوى الفواتير سيظهر هنا</p>
             </div>
         </div>
     </div>
