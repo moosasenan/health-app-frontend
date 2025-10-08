@@ -1,5 +1,13 @@
+/**
+ * التطبيق الرئيسي - نظام إدارة المستشفيات المتكامل
+ * ✅ نظام التسجيل والدخول الجديد
+ * ✅ إدارة المستخدمين والصلاحيات
+ * ✅ نظام المواعيد والمرضى
+ * ✅ الواجهات المتخصصة لكل دور
+ */
+
 // بيانات المستخدمين
-const users = [
+let users = JSON.parse(localStorage.getItem('systemUsers')) || [
     {
         id: 1,
         email: 'admin@sehati.com',
@@ -20,6 +28,13 @@ const users = [
         role: 'doctor',
         phone: '+967722222222',
         specialty: 'باطنية',
+        qualification: 'دكتوراه في الباطنية',
+        experience: 10,
+        clinic: 'العيادة المركزية',
+        description: 'أخصائي أمراض باطنية مع خبرة أكثر من 10 سنوات في تشخيص وعلاج الأمراض الداخلية',
+        fees: 150,
+        rating: 4.8,
+        age: 45,
         twoFactorEnabled: false,
         requiresPasswordChange: false,
         createdAt: '2024-01-01'
@@ -31,6 +46,10 @@ const users = [
         name: 'محمد المريض',
         role: 'patient',
         phone: '+967733333333',
+        age: 35,
+        gender: 'ذكر',
+        city: 'صنعاء',
+        bloodType: 'O+',
         specialty: null,
         twoFactorEnabled: false,
         requiresPasswordChange: false,
@@ -43,6 +62,7 @@ const users = [
         name: 'المحاسب العام',
         role: 'accountant',
         phone: '+967744444444',
+        age: 40,
         specialty: null,
         twoFactorEnabled: true,
         requiresPasswordChange: false,
@@ -53,21 +73,20 @@ const users = [
 // بيانات التطبيق
 const appData = {
     patients: [
-        { id: 1, name: 'موسى إبراهيم', phone: '775686818', city: 'تقرأ', age: 35, gender: 'ذكر' },
-        { id: 2, name: 'أحمد محمد', phone: '123456789', city: 'الرياض', age: 28, gender: 'ذكر' },
-        { id: 3, name: 'فاطمة علي', phone: '555123456', city: 'جدة', age: 42, gender: 'أنثى' },
-        { id: 4, name: 'خالد حسن', phone: '777888999', city: 'الدمام', age: 31, gender: 'ذكر' }
+        { id: 1, name: 'موسى إبراهيم', phone: '775686818', city: 'تقرأ', age: 35, gender: 'ذكر', bloodType: 'A+', email: 'mousa@example.com' },
+        { id: 2, name: 'أحمد محمد', phone: '123456789', city: 'الرياض', age: 28, gender: 'ذكر', bloodType: 'B+', email: 'ahmed@example.com' },
+        { id: 3, name: 'فاطمة علي', phone: '555123456', city: 'جدة', age: 42, gender: 'أنثى', bloodType: 'O-', email: 'fatima@example.com' },
+        { id: 4, name: 'خالد حسن', phone: '777888999', city: 'الدمام', age: 31, gender: 'ذكر', bloodType: 'AB+', email: 'khaled@example.com' }
     ],
     doctors: [
-        { id: 1, name: 'د. أحمد محمد', specialty: 'باطنية', phone: '111222333', clinic: 'العيادة المركزية', fees: 150, rating: 4.8 },
-        { id: 2, name: 'د. فاطمة علي', specialty: 'قلب', phone: '444555666', clinic: 'مستشفى الثورة', fees: 250, rating: 4.9 },
-        { id: 3, name: 'د. خالد حسن', specialty: 'عظام', phone: '777888999', clinic: 'مركز العظام', fees: 200, rating: 4.7 },
-        { id: 4, name: 'د. سارة عبدالله', specialty: 'أطفال', phone: '111333555', clinic: 'مستشفى الأطفال', fees: 180, rating: 4.8 }
+        { id: 1, name: 'د. أحمد محمد', specialty: 'باطنية', phone: '111222333', clinic: 'العيادة المركزية', fees: 150, rating: 4.8, qualification: 'دكتوراه في الباطنية', experience: 10, description: 'أخصائي أمراض باطنية', email: 'doctor@sehati.com' },
+        { id: 2, name: 'د. فاطمة علي', specialty: 'قلب', phone: '444555666', clinic: 'مستشفى الثورة', fees: 250, rating: 4.9, qualification: 'استشاري قلب', experience: 15, description: 'استشاري أمراض القلب', email: 'fatima@example.com' },
+        { id: 3, name: 'د. خالد حسن', specialty: 'عظام', phone: '777888999', clinic: 'مركز العظام', fees: 200, rating: 4.7, qualification: 'استشاري عظام', experience: 12, description: 'استشاري جراحة العظام', email: 'khaled@example.com' }
     ],
     appointments: [
-        { id: 1, patientId: 3, doctorId: 1, date: '2024-01-20', time: '10:00', status: 'مؤكد', notes: 'كشف دوري', type: 'كشف عادي' },
-        { id: 2, patientId: 3, doctorId: 2, date: '2024-01-22', time: '11:30', status: 'معلق', notes: 'ضغط دم مرتفع', type: 'كشف عاجل' },
-        { id: 3, patientId: 1, doctorId: 3, date: '2024-01-25', time: '14:00', status: 'مؤكد', notes: 'متابعة علاج', type: 'كشف متابعة' }
+        { id: 1, patientId: 3, doctorId: 1, date: '2024-01-20', time: '10:00', status: 'مؤكد', notes: 'كشف دوري', type: 'كشف عادي', patientName: 'فاطمة علي', doctorName: 'د. أحمد محمد' },
+        { id: 2, patientId: 3, doctorId: 2, date: '2024-01-22', time: '11:30', status: 'معلق', notes: 'ضغط دم مرتفع', type: 'كشف عاجل', patientName: 'فاطمة علي', doctorName: 'د. فاطمة علي' },
+        { id: 3, patientId: 1, doctorId: 3, date: '2024-01-25', time: '14:00', status: 'مؤكد', notes: 'متابعة علاج', type: 'كشف متابعة', patientName: 'موسى إبراهيم', doctorName: 'د. خالد حسن' }
     ],
     clinics: [
         { 
@@ -79,7 +98,8 @@ const appData = {
             lat: 15.3694, 
             lng: 44.1910,
             specialties: ['باطنية', 'عظام', 'أطفال'],
-            workingHours: '8:00 ص - 10:00 م'
+            workingHours: '8:00 ص - 10:00 م',
+            description: 'عيادة متكاملة تقدم خدمات طبية شاملة'
         },
         { 
             id: 2, 
@@ -90,36 +110,99 @@ const appData = {
             lat: 15.3543, 
             lng: 44.2066,
             specialties: ['قلب', 'جراحة', 'نساء وتوليد'],
-            workingHours: '24 ساعة'
-        },
-        { 
-            id: 3, 
-            name: 'مركز العظام التخصصي', 
-            address: 'صنعاء - حي التحرير', 
-            phone: '0333333333', 
-            city: 'صنعاء',
-            lat: 15.3515, 
-            lng: 44.2102,
-            specialties: ['عظام', 'علاج طبيعي'],
-            workingHours: '9:00 ص - 8:00 م'
+            workingHours: '24 ساعة',
+            description: 'مستشفى مرجعي يقدم خدمات طبية متقدمة'
         }
     ],
     transactions: [
-        { id: 1, type: 'دخل', amount: 150, description: 'كشف د. أحمد', date: '2024-01-15', status: 'مكتمل', patientId: 3 },
-        { id: 2, type: 'دخل', amount: 250, description: 'كشف د. فاطمة', date: '2024-01-16', status: 'معلق', patientId: 3 },
-        { id: 3, type: 'دخل', amount: 200, description: 'كشف د. خالد', date: '2024-01-17', status: 'مكتمل', patientId: 1 },
+        { id: 1, type: 'دخل', amount: 150, description: 'كشف د. أحمد', date: '2024-01-15', status: 'مكتمل', patientId: 3, patientName: 'فاطمة علي' },
+        { id: 2, type: 'دخل', amount: 250, description: 'كشف د. فاطمة', date: '2024-01-16', status: 'معلق', patientId: 3, patientName: 'فاطمة علي' },
+        { id: 3, type: 'دخل', amount: 200, description: 'كشف د. خالد', date: '2024-01-17', status: 'مكتمل', patientId: 1, patientName: 'موسى إبراهيم' },
         { id: 4, type: 'مصروف', amount: 50, description: 'شراء مستلزمات', date: '2024-01-18', status: 'مكتمل' }
     ]
 };
 
 let currentUser = null;
+let selectedUserType = '';
 
-// نظام تسجيل الدخول
-function fillLogin(email, password) {
-    document.getElementById('login-email').value = email;
-    document.getElementById('login-password').value = password;
+/**
+ * نظام اختيار نوع المستخدم
+ */
+function selectUserType(userType) {
+    selectedUserType = userType;
+    
+    // تحديث العنوان حسب نوع المستخدم
+    const titles = {
+        'patient': { title: 'المريض', subtitle: 'اهلاً بك! سجل دخولك أو أنشئ حساب جديد' },
+        'doctor': { title: 'الطبيب', subtitle: 'مرحباً دكتور! سجل دخولك أو أنشئ حساب طبي' },
+        'accountant': { title: 'المحاسب', subtitle: 'مرحباً! سجل دخولك أو أنشئ حساب محاسب' },
+        'admin': { title: 'مدير النظام', subtitle: 'مرحباً! سجل دخولك كمدير للنظام' }
+    };
+    
+    const titleInfo = titles[userType];
+    document.getElementById('login-title').textContent = `تسجيل الدخول - ${titleInfo.title}`;
+    document.getElementById('login-subtitle').textContent = titleInfo.subtitle;
+    
+    // إظهار/إخفاء الحقول الإضافية حسب نوع المستخدم
+    document.getElementById('doctor-extra-fields').classList.add('hidden');
+    document.getElementById('patient-extra-fields').classList.add('hidden');
+    
+    if (userType === 'doctor') {
+        document.getElementById('doctor-extra-fields').classList.remove('hidden');
+    } else if (userType === 'patient') {
+        document.getElementById('patient-extra-fields').classList.remove('hidden');
+    }
+    
+    // الانتقال إلى شاشة الدخول
+    document.getElementById('user-type-selection').classList.add('hidden');
+    document.getElementById('login-page').classList.remove('hidden');
+    
+    // إعادة تعيين النماذج
+    switchAuthTab('login');
 }
 
+function goBackToUserSelection() {
+    document.getElementById('login-page').classList.add('hidden');
+    document.getElementById('user-type-selection').classList.remove('hidden');
+    resetForms();
+}
+
+function switchAuthTab(tab) {
+    // تحديث الأزرار
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+    
+    // إظهار/إخفاء النماذج
+    document.getElementById('login-form').classList.toggle('hidden', tab !== 'login');
+    document.getElementById('register-form').classList.toggle('hidden', tab !== 'register');
+}
+
+function resetForms() {
+    // مسح جميع الحقول
+    const fields = [
+        'login-email', 'login-password',
+        'register-name', 'register-age', 'register-phone', 'register-email', 
+        'register-password', 'register-confirm-password',
+        'doctor-specialty', 'doctor-clinic', 'doctor-qualification', 
+        'doctor-experience', 'doctor-description', 'doctor-fees',
+        'patient-gender', 'patient-city', 'patient-blood-type'
+    ];
+    
+    fields.forEach(field => {
+        const element = document.getElementById(field);
+        if (element) element.value = '';
+    });
+    
+    // إعادة تعيين القيم الافتراضية
+    document.getElementById('doctor-fees').value = '150';
+    document.getElementById('remember-me').checked = false;
+}
+
+/**
+ * نظام تسجيل الدخول
+ */
 function handleLogin() {
     const email = document.getElementById('login-email').value;
     const password = document.getElementById('login-password').value;
@@ -134,6 +217,12 @@ function handleLogin() {
     
     if (!user) {
         showNotification('البريد الإلكتروني أو كلمة المرور غير صحيحة', 'error');
+        return;
+    }
+    
+    // التحقق من نوع المستخدم
+    if (selectedUserType && user.role !== selectedUserType) {
+        showNotification(`هذا الحساب ليس ${getRoleDisplayName(selectedUserType)}`, 'error');
         return;
     }
     
@@ -156,35 +245,150 @@ function handleLogin() {
     
     // تحديث اسم المستخدم في الواجهة
     updateUserInfo(user);
-    
-    // تحديث إحصائيات الجلسات
-    sessionManager.updateSessionStats();
 }
 
+/**
+ * نظام التسجيل الجديد
+ */
+function handleRegistration() {
+    const name = document.getElementById('register-name').value;
+    const age = document.getElementById('register-age').value;
+    const phone = document.getElementById('register-phone').value;
+    const email = document.getElementById('register-email').value;
+    const password = document.getElementById('register-password').value;
+    const confirmPassword = document.getElementById('register-confirm-password').value;
+    
+    // التحقق من الحقول الأساسية
+    if (!name || !age || !phone || !email || !password || !confirmPassword) {
+        showNotification('يرجى ملء جميع الحقول الأساسية', 'error');
+        return;
+    }
+    
+    if (password !== confirmPassword) {
+        showNotification('كلمات المرور غير متطابقة', 'error');
+        return;
+    }
+    
+    if (password.length < 6) {
+        showNotification('كلمة المرور يجب أن تكون 6 أحرف على الأقل', 'error');
+        return;
+    }
+    
+    if (age < 1 || age > 120) {
+        showNotification('يرجى إدخال عمر صحيح', 'error');
+        return;
+    }
+    
+    // التحقق من البريد الإلكتروني
+    const existingUser = users.find(u => u.email === email);
+    if (existingUser) {
+        showNotification('البريد الإلكتروني مسجل مسبقاً', 'error');
+        return;
+    }
+    
+    // إنشاء مستخدم جديد
+    const newUser = {
+        id: Date.now(),
+        email: email,
+        password: password,
+        name: name,
+        role: selectedUserType,
+        phone: phone,
+        age: parseInt(age),
+        twoFactorEnabled: false,
+        requiresPasswordChange: false,
+        createdAt: new Date().toISOString().split('T')[0],
+        isActive: true
+    };
+    
+    // إضافة معلومات إضافية حسب نوع المستخدم
+    if (selectedUserType === 'doctor') {
+        const specialty = document.getElementById('doctor-specialty').value;
+        const clinic = document.getElementById('doctor-clinic').value;
+        const qualification = document.getElementById('doctor-qualification').value;
+        const experience = document.getElementById('doctor-experience').value;
+        const description = document.getElementById('doctor-description').value;
+        const fees = document.getElementById('doctor-fees').value;
+        
+        if (!specialty || !clinic || !qualification) {
+            showNotification('يرجى ملء جميع الحقول الطبية', 'error');
+            return;
+        }
+        
+        newUser.specialty = specialty;
+        newUser.clinic = clinic;
+        newUser.qualification = qualification;
+        newUser.experience = parseInt(experience) || 0;
+        newUser.description = description;
+        newUser.fees = parseInt(fees) || 150;
+        newUser.rating = 5.0;
+        
+    } else if (selectedUserType === 'patient') {
+        const gender = document.getElementById('patient-gender').value;
+        const city = document.getElementById('patient-city').value;
+        const bloodType = document.getElementById('patient-blood-type').value;
+        
+        if (!gender) {
+            showNotification('يرجى اختيار الجنس', 'error');
+            return;
+        }
+        
+        newUser.gender = gender;
+        newUser.city = city;
+        newUser.bloodType = bloodType;
+    }
+    
+    // إضافة المستخدم الجديد
+    users.push(newUser);
+    saveUsersToStorage();
+    
+    // تسجيل الدخول تلقائياً
+    currentUser = newUser;
+    saveUserSession(newUser);
+    logUserActivity(newUser.id, 'register', `تسجيل حساب جديد كـ ${getRoleDisplayName(selectedUserType)}`);
+    
+    showDashboard(selectedUserType);
+    showNotification(`🎉 تم إنشاء حسابك بنجاح! مرحباً ${name}`, 'success');
+    updateUserInfo(newUser);
+}
+
+function saveUsersToStorage() {
+    localStorage.setItem('systemUsers', JSON.stringify(users));
+}
+
+/**
+ * نظام العرض والواجهات
+ */
 function showDashboard(role) {
     // إخفاء جميع اللوحات
-    document.getElementById('login-page').classList.add('hidden');
-    document.getElementById('admin-dashboard').classList.add('hidden');
-    document.getElementById('doctor-dashboard').classList.add('hidden');
-    document.getElementById('patient-dashboard').classList.add('hidden');
-    document.getElementById('accountant-dashboard').classList.add('hidden');
+    const allSections = [
+        'user-type-selection', 'login-page',
+        'admin-dashboard', 'doctor-dashboard', 'patient-dashboard', 'accountant-dashboard'
+    ];
+    
+    allSections.forEach(section => {
+        document.getElementById(section).classList.add('hidden');
+    });
     
     // إظهار اللوحة المناسبة
+    const dashboardId = `${role}-dashboard`;
+    const dashboard = document.getElementById(dashboardId);
+    if (dashboard) {
+        dashboard.classList.remove('hidden');
+    }
+    
+    // تحميل البيانات الخاصة بكل لوحة
     switch(role) {
         case 'admin':
-            document.getElementById('admin-dashboard').classList.remove('hidden');
             loadAdminDashboard();
             break;
         case 'doctor':
-            document.getElementById('doctor-dashboard').classList.remove('hidden');
             loadDoctorDashboard();
             break;
         case 'patient':
-            document.getElementById('patient-dashboard').classList.remove('hidden');
             loadPatientDashboard();
             break;
         case 'accountant':
-            document.getElementById('accountant-dashboard').classList.remove('hidden');
             loadAccountantDashboard();
             break;
     }
@@ -203,44 +407,40 @@ function updateUserInfo(user) {
     
     const elementId = elements[user.role];
     if (elementId) {
-        document.getElementById(elementId).textContent = user.name;
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.textContent = user.name;
+        }
     }
 }
 
 function logout() {
     if (currentUser) {
-        // تسجيل نشاط الخروج
-        logUserActivity(currentUser.id, 'logout', 'تسجيل خروج من النظام');
         showNotification(`مع السلامة ${currentUser.name}!`, 'success');
     }
     
     // مسح جلسة المستخدم
     clearUserSession();
     currentUser = null;
+    selectedUserType = '';
     
-    // إعادة التعيين إلى صفحة الدخول
-    document.getElementById('login-page').classList.remove('hidden');
-    document.getElementById('admin-dashboard').classList.add('hidden');
-    document.getElementById('doctor-dashboard').classList.add('hidden');
-    document.getElementById('patient-dashboard').classList.add('hidden');
-    document.getElementById('accountant-dashboard').classList.add('hidden');
-    
-    // مسح حقول الدخول
-    document.getElementById('login-email').value = '';
-    document.getElementById('login-password').value = '';
+    // إعادة التعيين إلى اختيار نوع المستخدم
+    showDashboard('user-type-selection');
+    resetForms();
 }
 
-// لوحة المدير
+/**
+ * لوحة المدير
+ */
 function loadAdminDashboard() {
     showAdminSection('stats');
     updateAdminStats();
     loadAdminUsers();
-    loadAdminDoctors();
 }
 
 function showAdminSection(section) {
     // إخفاء جميع الأقسام
-    const sections = ['stats', 'users', 'reports', 'doctors', 'clinics', 'financial', 'settings', 'specialties', 'appearance', 'ai'];
+    const sections = ['stats', 'users', 'reports', 'doctors', 'clinics', 'financial', 'settings'];
     sections.forEach(sec => {
         const element = document.getElementById(`admin-${sec}`);
         if (element) element.classList.add('hidden');
@@ -260,21 +460,13 @@ function updateAdminStats() {
     if (todayElement) {
         todayElement.textContent = today;
     }
-    
-    // تحديث إحصائيات النظام
-    const stats = sessionManager.loadAppStatistics();
-    if (stats) {
-        console.log('📊 إحصائيات النظام:', stats);
-    }
 }
 
 function loadAdminUsers() {
     const usersList = document.getElementById('admin-users-list');
     if (!usersList) return;
     
-    const allUsers = window.adminSystem ? window.adminSystem.userManagement.users : users;
-    
-    usersList.innerHTML = allUsers.map(user => `
+    usersList.innerHTML = users.map(user => `
         <div class="table-row">
             <div>
                 <strong>${user.name}</strong>
@@ -288,84 +480,28 @@ function loadAdminUsers() {
             </div>
             <div>
                 <span class="status confirmed">نشط</span>
-                ${isUserOnline(user.id) ? '<span style="color: #27ae60; margin-right: 5px;" title="متصل حالياً">●</span>' : ''}
             </div>
             <div>
                 <button class="action-btn" onclick="showEditUserForm(${user.id})" title="تعديل البيانات">✏️</button>
                 <button class="action-btn" onclick="showSecurityForm(${user.id})" title="إعدادات الأمان">🔒</button>
-                <button class="action-btn" onclick="viewUserActivity(${user.id})" title="النشاط">📊</button>
-                <button class="action-btn" onclick="deleteUser(${user.id})" title="حذف">🗑️</button>
+                ${user.role !== 'admin' ? `<button class="action-btn" onclick="deleteUser(${user.id})" title="حذف">🗑️</button>` : ''}
             </div>
         </div>
     `).join('');
 }
 
-function loadAdminDoctors() {
-    const doctorsList = document.getElementById('admin-doctors-list');
-    if (!doctorsList) return;
-    
-    doctorsList.innerHTML = appData.doctors.map(doctor => `
-        <div class="appointment-card">
-            <h4>${doctor.name}</h4>
-            <p>🩺 ${doctor.specialty}</p>
-            <p>📞 ${doctor.phone}</p>
-            <p>🏥 ${doctor.clinic}</p>
-            <p>💰 ${doctor.fees} ريال</p>
-            <p>⭐ ${doctor.rating}/5</p>
-            <div class="quick-actions">
-                <button class="action-btn" onclick="editDoctor(${doctor.id})">✏️ تعديل</button>
-                <button class="action-btn" onclick="deleteDoctor(${doctor.id})">🗑️ حذف</button>
-            </div>
-        </div>
-    `).join('');
-}
-
-function showAddUserForm() {
-    showNotification('نموذج إضافة مستخدم سيظهر هنا', 'info');
-}
-
-function showAddDoctorForm() {
-    showNotification('نموذج إضافة طبيب سيظهر هنا', 'info');
-}
-
-function exportReports() {
-    showNotification('جاري تصدير التقارير...', 'success');
-}
-
-function exportFinancialData() {
-    showNotification('جاري تصدير البيانات المالية...', 'success');
-}
-
-function editUser(userId) {
-    showNotification(`جاري تحرير المستخدم #${userId}`, 'info');
-}
-
-function deleteUser(userId) {
-    if (confirm('هل أنت متأكد من حذف هذا المستخدم؟')) {
-        showNotification('تم حذف المستخدم', 'success');
-    }
-}
-
-function editDoctor(doctorId) {
-    showNotification(`جاري تحرير الطبيب #${doctorId}`, 'info');
-}
-
-function deleteDoctor(doctorId) {
-    if (confirm('هل أنت متأكد من حذف هذا الطبيب؟')) {
-        showNotification('تم حذف الطبيب', 'success');
-    }
-}
-
-// لوحة الطبيب
+/**
+ * لوحة الطبيب
+ */
 function loadDoctorDashboard() {
     showDoctorSection('appointments');
     updateDoctorAppointments();
     updateDoctorPatients();
-    updateDoctorSchedule();
+    loadDoctorProfile();
 }
 
 function showDoctorSection(section) {
-    const sections = ['appointments', 'patients', 'schedule'];
+    const sections = ['appointments', 'patients', 'schedule', 'profile'];
     sections.forEach(sec => {
         const element = document.getElementById(`doctor-${sec}`);
         if (element) element.classList.add('hidden');
@@ -393,15 +529,16 @@ function updateDoctorAppointments() {
                     <p>⏰ ${apt.time}</p>
                     <p>📝 ${apt.notes}</p>
                     <p>📋 ${apt.type}</p>
+                    <p>📞 ${patient ? patient.phone : 'لا يوجد'}</p>
                     <span class="status ${apt.status === 'مؤكد' ? 'confirmed' : 'pending'}">${apt.status}</span>
                     <div class="quick-actions">
                         <button class="action-btn" onclick="confirmAppointment(${apt.id})">✅ تأكيد</button>
+                        <button class="action-btn" onclick="rescheduleAppointment(${apt.id})">🔄 إعادة جدولة</button>
                         <button class="action-btn" onclick="cancelAppointment(${apt.id})">❌ إلغاء</button>
-                        <button class="action-btn" onclick="viewPatientDetails(${apt.patientId})">👁️ التفاصيل</button>
                     </div>
                 </div>
             `;
-        }).join('') || '<p>لا توجد مواعيد لليوم</p>';
+        }).join('') || '<div class="no-data">لا توجد مواعيد لليوم</div>';
     }
 }
 
@@ -409,93 +546,93 @@ function updateDoctorPatients() {
     const patientsList = document.getElementById('doctor-patients-list');
     if (!patientsList) return;
     
-    patientsList.innerHTML = appData.patients.map(patient => `
+    // المرضى الذين لديهم مواعيد مع الطبيب
+    const doctorAppointments = appData.appointments.filter(apt => apt.doctorId === currentUser.id);
+    const patientIds = [...new Set(doctorAppointments.map(apt => apt.patientId))];
+    const doctorPatients = appData.patients.filter(p => patientIds.includes(p.id));
+    
+    patientsList.innerHTML = doctorPatients.map(patient => `
         <div class="appointment-card">
             <h4>${patient.name}</h4>
             <p>📞 ${patient.phone}</p>
             <p>📍 ${patient.city}</p>
             <p>🎂 ${patient.age} سنة - ${patient.gender}</p>
+            <p>🩸 ${patient.bloodType || 'غير محدد'}</p>
             <div class="quick-actions">
                 <button class="action-btn" onclick="viewPatientHistory(${patient.id})">📋 السجل</button>
                 <button class="action-btn" onclick="addAppointmentForPatient(${patient.id})">📅 موعد</button>
-                <button class="action-btn" onclick="viewPatientDetails(${patient.id})">👁️ التفاصيل</button>
             </div>
         </div>
-    `).join('');
+    `).join('') || '<div class="no-data">لا توجد مرضى مسجلين</div>';
 }
 
-function updateDoctorSchedule() {
-    const scheduleContainer = document.getElementById('doctor-schedule-container');
-    if (!scheduleContainer) return;
+function loadDoctorProfile() {
+    const profileContainer = document.getElementById('doctor-profile-container');
+    if (!profileContainer || !currentUser) return;
     
-    scheduleContainer.innerHTML = `
-        <div class="appointment-card">
-            <h4>الاثنين - الجمعة</h4>
-            <p>⏰ 9:00 ص - 2:00 م</p>
-            <p>⏰ 5:00 م - 9:00 م</p>
+    profileContainer.innerHTML = `
+        <div class="profile-header">
+            <div class="profile-avatar">🩺</div>
+            <div class="profile-info">
+                <h3>${currentUser.name}</h3>
+                <p>${currentUser.specialty} - ${currentUser.qualification}</p>
+                <p>📧 ${currentUser.email} | 📞 ${currentUser.phone}</p>
+            </div>
         </div>
-        <div class="appointment-card">
-            <h4>السبت</h4>
-            <p>⏰ 10:00 ص - 1:00 م</p>
-        </div>
-        <div class="appointment-card">
-            <h4>الأحد</h4>
-            <p>⏰ إجازة</p>
+        
+        <div class="profile-details">
+            <div class="detail-group">
+                <h4>🩺 المعلومات المهنية</h4>
+                <div class="detail-item">
+                    <span>التخصص:</span>
+                    <span>${currentUser.specialty}</span>
+                </div>
+                <div class="detail-item">
+                    <span>العيادة:</span>
+                    <span>${currentUser.clinic}</span>
+                </div>
+                <div class="detail-item">
+                    <span>سنوات الخبرة:</span>
+                    <span>${currentUser.experience} سنة</span>
+                </div>
+                <div class="detail-item">
+                    <span>رسوم الكشف:</span>
+                    <span>${currentUser.fees} ريال</span>
+                </div>
+            </div>
+            
+            <div class="detail-group">
+                <h4>📊 الإحصائيات</h4>
+                <div class="detail-item">
+                    <span>المواعيد اليوم:</span>
+                    <span>${appData.appointments.filter(apt => apt.doctorId === currentUser.id && apt.date === new Date().toISOString().split('T')[0]).length}</span>
+                </div>
+                <div class="detail-item">
+                    <span>إجمالي المرضى:</span>
+                    <span>${new Set(appData.appointments.filter(apt => apt.doctorId === currentUser.id).map(apt => apt.patientId)).size}</span>
+                </div>
+                <div class="detail-item">
+                    <span>التقييم:</span>
+                    <span>⭐ ${currentUser.rating}/5</span>
+                </div>
+            </div>
         </div>
     `;
 }
 
-function showAddPatientForm() {
-    showNotification('نموذج إضافة مريض سيظهر هنا', 'info');
-}
-
-function addScheduleSlot() {
-    showNotification('إضافة وقت جديد للجدول', 'info');
-}
-
-function confirmAppointment(appointmentId) {
-    const appointment = appData.appointments.find(apt => apt.id === appointmentId);
-    if (appointment) {
-        appointment.status = 'مؤكد';
-        showNotification('تم تأكيد الموعد', 'success');
-        updateDoctorAppointments();
-    }
-}
-
-function cancelAppointment(appointmentId) {
-    if (confirm('هل أنت متأكد من إلغاء هذا الموعد؟')) {
-        const appointment = appData.appointments.find(apt => apt.id === appointmentId);
-        if (appointment) {
-            appointment.status = 'ملغى';
-            showNotification('تم إلغاء الموعد', 'success');
-            updateDoctorAppointments();
-        }
-    }
-}
-
-function viewPatientHistory(patientId) {
-    showNotification(`عرض سجل المريض #${patientId}`, 'info');
-}
-
-function addAppointmentForPatient(patientId) {
-    showNotification(`إضافة موعد للمريض #${patientId}`, 'info');
-}
-
-function viewPatientDetails(patientId) {
-    showNotification(`عرض تفاصيل المريض #${patientId}`, 'info');
-}
-
-// لوحة المريض
+/**
+ * لوحة المريض
+ */
 function loadPatientDashboard() {
     showPatientSection('appointments');
     updatePatientAppointments();
     updatePatientDoctors();
     updatePatientClinics();
-    initPatientMap();
+    loadPatientProfile();
 }
 
 function showPatientSection(section) {
-    const sections = ['appointments', 'doctors', 'clinics', 'ai'];
+    const sections = ['appointments', 'doctors', 'clinics', 'ai', 'profile'];
     sections.forEach(sec => {
         const element = document.getElementById(`patient-${sec}`);
         if (element) element.classList.add('hidden');
@@ -523,15 +660,15 @@ function updatePatientAppointments() {
                     <p>⏰ ${apt.time}</p>
                     <p>📝 ${apt.notes}</p>
                     <p>📋 ${apt.type}</p>
-                    <span class="status ${apt.status === 'مؤكد' ? 'confirmed' : 'pending'}">${apt.status}</span>
+                    <p>🏥 ${doctor ? doctor.clinic : 'غير محدد'}</p>
+                    <span class="status ${apt.status === 'مؤكد' ? 'confirmed' : apt.status === 'معلق' ? 'pending' : 'cancelled'}">${apt.status}</span>
                     <div class="quick-actions">
                         <button class="action-btn" onclick="rescheduleAppointment(${apt.id})">🔄 إعادة جدولة</button>
                         <button class="action-btn" onclick="cancelPatientAppointment(${apt.id})">❌ إلغاء</button>
-                        <button class="action-btn" onclick="viewDoctorProfile(${apt.doctorId})">👁️ الطبيب</button>
                     </div>
                 </div>
             `;
-        }).join('') || '<p>لا توجد مواعيد حالية</p>';
+        }).join('') || '<div class="no-data">لا توجد مواعيد حالية</div>';
     }
 }
 
@@ -550,7 +687,6 @@ function updatePatientDoctors() {
             <div class="quick-actions">
                 <button class="action-btn primary" onclick="bookWithDoctor(${doctor.id})">📅 حجز موعد</button>
                 <button class="action-btn" onclick="viewDoctorProfile(${doctor.id})">👁️ الملف</button>
-                <button class="action-btn" onclick="viewDoctorReviews(${doctor.id})">💬 التقييمات</button>
             </div>
         </div>
     `).join('');
@@ -561,198 +697,90 @@ function updatePatientClinics() {
     if (!clinicsList) return;
     
     clinicsList.innerHTML = appData.clinics.map(clinic => `
-        <div class="clinic-item" onclick="selectClinic(${clinic.id})">
-            <h4>${clinic.name}</h4>
+        <div class="appointment-card">
+            <h4>🏥 ${clinic.name}</h4>
             <p>📍 ${clinic.address}</p>
             <p>📞 ${clinic.phone}</p>
             <p>🕒 ${clinic.workingHours}</p>
-            <p>🎯 ${clinic.specialties.join('، ')}</p>
+            <p>🎯 التخصصات: ${clinic.specialties.join('، ')}</p>
             <div class="quick-actions">
-                <button class="action-btn" onclick="openGoogleMaps(${clinic.lat}, ${clinic.lng}, '${clinic.name}')">🗺️ فتح الخريطة</button>
-                <button class="action-btn" onclick="viewClinicDetails(${clinic.id})">👁️ التفاصيل</button>
+                <button class="action-btn primary" onclick="viewClinicOnMap(${clinic.id})">🗺️ عرض على الخريطة</button>
+                <button class="action-btn" onclick="callClinic('${clinic.phone}')">📞 اتصل</button>
             </div>
         </div>
     `).join('');
 }
 
-function initPatientMap() {
-    const mapElement = document.getElementById('patient-map');
-    if (!mapElement) return;
+function loadPatientProfile() {
+    const profileContainer = document.getElementById('patient-profile-container');
+    if (!profileContainer || !currentUser) return;
     
-    const clinics = appData.clinics || [];
+    const patientAppointments = appData.appointments.filter(apt => apt.patientId === currentUser.id);
+    const confirmedAppointments = patientAppointments.filter(apt => apt.status === 'مؤكد').length;
+    const completedAppointments = patientAppointments.filter(apt => apt.status === 'مكتمل').length;
+    const uniqueDoctors = new Set(patientAppointments.map(apt => apt.doctorId)).size;
     
-    if (clinics.length > 0) {
-        mapElement.innerHTML = `
-            <div style="background: linear-gradient(135deg, var(--bg-color) 0%, #764ba2 100%); color: white; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; border-radius: 10px;">
-                <h3 style="margin-bottom: 20px; font-size: 1.5em;">🗺️ خريطة العيادات</h3>
-                <p style="margin-bottom: 15px;">انقر على أي عيادة لفتح موقعها في خرائط جوجل</p>
-                
-                <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; margin: 10px 0; width: 90%;">
-                    <strong>📍 محاكاة الخريطة التفاعلية</strong>
-                    <p style="margin: 10px 0; font-size: 0.9em;">هذه محاكاة للخريطة الحقيقية</p>
-                    <div style="background: rgba(255,255,255,0.3); padding: 15px; border-radius: 8px; margin: 10px 0;">
-                        <strong>العيادات المتاحة:</strong>
-                        ${clinics.map(clinic => `
-                            <div style="margin: 8px 0; padding: 8px; background: rgba(255,255,255,0.2); border-radius: 5px;">
-                                ${clinic.name} - ${clinic.city}
-                            </div>
-                        `).join('')}
-                    </div>
+    profileContainer.innerHTML = `
+        <div class="profile-header">
+            <div class="profile-avatar">👤</div>
+            <div class="profile-info">
+                <h3>${currentUser.name}</h3>
+                <p>🎂 ${currentUser.age} سنة - ${currentUser.gender}</p>
+                <p>📧 ${currentUser.email} | 📞 ${currentUser.phone}</p>
+            </div>
+        </div>
+        
+        <div class="profile-details">
+            <div class="detail-group">
+                <h4>👤 المعلومات الشخصية</h4>
+                <div class="detail-item">
+                    <span>العمر:</span>
+                    <span>${currentUser.age} سنة</span>
                 </div>
-                
-                ${clinics.map(clinic => `
-                    <button onclick="openGoogleMaps(${clinic.lat}, ${clinic.lng}, '${clinic.name}')" 
-                            style="background: white; color: var(--primary-color); border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 5px; width: 90%; font-weight: bold;">
-                        🗺️ فتح ${clinic.name} في خرائط جوجل
-                    </button>
-                `).join('')}
+                <div class="detail-item">
+                    <span>الجنس:</span>
+                    <span>${currentUser.gender}</span>
+                </div>
+                <div class="detail-item">
+                    <span>المدينة:</span>
+                    <span>${currentUser.city || 'غير محدد'}</span>
+                </div>
+                <div class="detail-item">
+                    <span>فصيلة الدم:</span>
+                    <span>${currentUser.bloodType || 'غير محدد'}</span>
+                </div>
             </div>
-        `;
-    } else {
-        mapElement.innerHTML = `
-            <div style="background: var(--light-bg); color: #666; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px; text-align: center; border-radius: 10px;">
-                <h3 style="margin-bottom: 15px;">🗺️ الخرائط</h3>
-                <p>لا توجد عيادات متاحة للعرض حالياً</p>
+            
+            <div class="detail-group">
+                <h4>📊 الإحصائيات</h4>
+                <div class="detail-item">
+                    <span>المواعيد القادمة:</span>
+                    <span>${confirmedAppointments}</span>
+                </div>
+                <div class="detail-item">
+                    <span>المواعيد السابقة:</span>
+                    <span>${completedAppointments}</span>
+                </div>
+                <div class="detail-item">
+                    <span>عدد الأطباء:</span>
+                    <span>${uniqueDoctors}</span>
+                </div>
             </div>
-        `;
-    }
-}
-
-function openGoogleMaps(lat, lng, name) {
-    // استخدام رابط خرائط جوجل دقيق مع إحداثيات وzoom
-    const zoomLevel = 15;
-    const mapUrl = `https://www.google.com/maps?q=${lat},${lng}&z=${zoomLevel}&ll=${lat},${lng}`;
-    
-    // فتح في نافذة جديدة
-    window.open(mapUrl, '_blank', 'noopener,noreferrer');
-    
-    showNotification(`جاري فتح موقع ${name} في خرائط جوجل`, 'success');
-    
-    // تسجيل النشاط للتحليلات
-    logMapActivity(name, lat, lng);
-}
-
-function logMapActivity(clinicName, lat, lng) {
-    if (currentUser) {
-        logUserActivity(currentUser.id, 'map_view', `عرض موقع ${clinicName} على الخريطة`);
-    }
-}
-
-function bookNewAppointment() {
-    showNotification('جاري فتح نموذج حجز موعد جديد...', 'info');
-}
-
-function bookWithDoctor(doctorId) {
-    showNotification(`جاري حجز موعد مع الطبيب #${doctorId}`, 'info');
-}
-
-function viewDoctorProfile(doctorId) {
-    showNotification(`عرض ملف الطبيب #${doctorId}`, 'info');
-}
-
-function viewDoctorReviews(doctorId) {
-    showNotification(`عرض تقييمات الطبيب #${doctorId}`, 'info');
-}
-
-function selectClinic(clinicId) {
-    showNotification(`تم اختيار العيادة #${clinicId}`, 'success');
-}
-
-function viewClinicDetails(clinicId) {
-    showNotification(`عرض تفاصيل العيادة #${clinicId}`, 'info');
-}
-
-function rescheduleAppointment(appointmentId) {
-    showNotification(`إعادة جدولة الموعد #${appointmentId}`, 'info');
-}
-
-function cancelPatientAppointment(appointmentId) {
-    if (confirm('هل أنت متأكد من إلغاء هذا الموعد؟')) {
-        const appointment = appData.appointments.find(apt => apt.id === appointmentId);
-        if (appointment) {
-            appointment.status = 'ملغى';
-            showNotification('تم إلغاء الموعد', 'success');
-            updatePatientAppointments();
-        }
-    }
-}
-
-// المساعد الذكي
-function handleChatInput(event) {
-    if (event.key === 'Enter') {
-        sendMessage();
-    }
-}
-
-function sendMessage() {
-    const userInput = document.getElementById('user-message');
-    const message = userInput.value.trim();
-    
-    if (!message) return;
-    
-    addChatMessage('user', message);
-    userInput.value = '';
-    
-    // محاكاة استجابة الذكاء الاصطناعي
-    setTimeout(() => {
-        const response = generateAIResponse(message);
-        addChatMessage('ai', response);
-    }, 1000);
-}
-
-function addChatMessage(sender, message) {
-    const chatMessages = document.getElementById('ai-chat-messages');
-    const messageDiv = document.createElement('div');
-    messageDiv.className = sender === 'user' ? 'user-message' : 'ai-message';
-    
-    const timestamp = new Date().toLocaleTimeString('ar-EG', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
-    });
-    
-    messageDiv.innerHTML = `
-        <strong>${sender === 'user' ? 'أنت' : 'المساعد'}:</strong> ${message}
-        <div style="font-size: 0.8em; color: #666; margin-top: 5px; text-align: ${sender === 'user' ? 'left' : 'right'};">${timestamp}</div>
+        </div>
     `;
-    
-    chatMessages.appendChild(messageDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-function generateAIResponse(message) {
-    const lowerMessage = message.toLowerCase();
-    
-    if (lowerMessage.includes('ألم') || lowerMessage.includes('وجع')) {
-        return 'بناءً على وصفك للألم، أنصحك بمراجعة طبيب باطنية. يمكنك حجز موعد من قسم "🩺 الأطباء". هل تريد المساعدة في العثور على طبيب قريب؟';
-    } else if (lowerMessage.includes('حرارة') || lowerMessage.includes('سخونة')) {
-        return 'الحرارة قد تكون عرضاً لعدة حالات. أنصح بعمل تحاليل دم وصورة شعاعية للصدر. يمكنني مساعدتك في العثور على مختبر قريب من قسم "🏥 العيادات".';
-    } else if (lowerMessage.includes('ضغط') || lowerMessage.includes('دوار')) {
-        return 'هذه الأعراض قد تكون مرتبطة بضغط الدم. أنصح بمراجعة طبيب قلب وأوعية دموية. لدينا أطباء متخصصون في هذا المجال في قسم "🩺 الأطباء".';
-    } else if (lowerMessage.includes('حساسية') || lowerMessage.includes('حكة')) {
-        return 'الأعراض تشير إلى احتمالية وجود حساسية. جرب تناول مضاد هستامين، وإذا استمرت الأعراض راجع طبيب جلدية من قسم "🩺 الأطباء".';
-    } else if (lowerMessage.includes('موعد') || lowerMessage.includes('حجز')) {
-        return 'يمكنك حجز موعد جديد من خلال الضغط على زر "📅 حجز موعد جديد" في قسم المواعيد. كما يمكنك تصفح الأطباء المتاحين من قسم "🩺 الأطباء".';
-    } else if (lowerMessage.includes('عيادة') || lowerMessage.includes('مستشفى')) {
-        return 'يمكنك العثور على جميع العيادات والمستشفيات المتاحة في قسم "🏥 العيادات". هناك خرائط تفاعلية لمساعدتك في الوصول إلى الموقع.';
-    } else {
-        return 'شكراً لاستشارتك. للحصول على تشخيص دقيق، أنصح بمراجعة طبيب متخصص. يمكنني مساعدتك في حجز موعد مع طبيب مناسب من خلال التطبيق.';
-    }
-}
-
-function askQuickQuestion(question) {
-    document.getElementById('user-message').value = question;
-    sendMessage();
-}
-
-// لوحة المحاسب
+/**
+ * لوحة المحاسب
+ */
 function loadAccountantDashboard() {
     showAccountantSection('transactions');
+    updateAccountantTransactions();
     updateFinancialStats();
-    loadTransactions();
 }
 
 function showAccountantSection(section) {
-    const sections = ['transactions', 'reports', 'invoices', 'ai-accounting', 'verification'];
+    const sections = ['transactions', 'reports', 'invoices'];
     sections.forEach(sec => {
         const element = document.getElementById(`accountant-${sec}`);
         if (element) element.classList.add('hidden');
@@ -764,128 +792,107 @@ function showAccountantSection(section) {
     }
 }
 
-function updateFinancialStats() {
-    // تحديث الإحصائيات المالية
-    const totalIncome = appData.transactions
-        .filter(t => t.type === 'دخل' && t.status === 'مكتمل')
-        .reduce((sum, t) => sum + t.amount, 0);
-    
-    const pendingAmount = appData.transactions
-        .filter(t => t.status === 'معلق')
-        .reduce((sum, t) => sum + t.amount, 0);
-    
-    const expenses = appData.transactions
-        .filter(t => t.type === 'مصروف' && t.status === 'مكتمل')
-        .reduce((sum, t) => sum + t.amount, 0);
-    
-    console.log('💰 الإحصائيات المالية:', { totalIncome, pendingAmount, expenses });
-}
-
-function loadTransactions() {
+function updateAccountantTransactions() {
     const transactionsList = document.getElementById('accountant-transactions-list');
     if (!transactionsList) return;
     
     transactionsList.innerHTML = appData.transactions.map(transaction => `
-        <div class="appointment-card">
-            <h4>${transaction.description}</h4>
-            <p>💰 ${transaction.amount} ريال</p>
-            <p>📅 ${transaction.date}</p>
-            <p>📋 ${transaction.type}</p>
-            <span class="status ${transaction.status === 'مكتمل' ? 'confirmed' : 'pending'}">${transaction.status}</span>
-            ${transaction.patientId ? `<p>👤 ${appData.patients.find(p => p.id === transaction.patientId)?.name || 'مريض'}</p>` : ''}
+        <div class="table-row">
+            <div>${transaction.id}</div>
+            <div>
+                <span class="transaction-type ${transaction.type}">${transaction.type}</span>
+            </div>
+            <div>${transaction.amount} ريال</div>
+            <div>${transaction.description}</div>
+            <div>${transaction.date}</div>
+            <div>
+                <span class="status ${transaction.status}">${transaction.status}</span>
+            </div>
+            <div>${transaction.patientName || '-'}</div>
+            <div>
+                <button class="action-btn" onclick="editTransaction(${transaction.id})">✏️</button>
+                <button class="action-btn" onclick="deleteTransaction(${transaction.id})">🗑️</button>
+            </div>
         </div>
     `).join('');
 }
 
-function generateDailyReport() {
-    showNotification('جاري إنشاء التقرير اليومي...', 'success');
-}
-
-function generateMonthlyReport() {
-    showNotification('جاري إنشاء التقرير الشهري...', 'success');
-}
-
-function generateYearlyReport() {
-    showNotification('جاري إنشاء التقرير السنوي...', 'success');
-}
-
-function createNewInvoice() {
-    showNotification('إنشاء فاتورة جديدة', 'info');
-}
-
-function viewAllInvoices() {
-    showNotification('عرض جميع الفواتير', 'info');
-}
-
-// نظام الإشعارات
-function showNotification(message, type = 'info') {
-    // إنشاء عنصر الإشعار
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.innerHTML = `
-        <div class="notification-content">
-            <span class="notification-icon">${getNotificationIcon(type)}</span>
-            <span class="notification-message">${message}</span>
-        </div>
-    `;
+function updateFinancialStats() {
+    const totalIncome = appData.transactions
+        .filter(t => t.type === 'دخل' && t.status === 'مكتمل')
+        .reduce((sum, t) => sum + t.amount, 0);
     
-    // إضافة الأنماط
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: ${getNotificationColor(type)};
-        color: white;
-        padding: 15px 20px;
-        border-radius: 10px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        z-index: 1000;
-        max-width: 400px;
-        animation: slideIn 0.3s ease-out;
-    `;
+    const totalExpenses = appData.transactions
+        .filter(t => t.type === 'مصروف' && t.status === 'مكتمل')
+        .reduce((sum, t) => sum + t.amount, 0);
     
-    document.body.appendChild(notification);
+    const pendingIncome = appData.transactions
+        .filter(t => t.type === 'دخل' && t.status === 'معلق')
+        .reduce((sum, t) => sum + t.amount, 0);
     
-    // إزالة الإشعار بعد 5 ثوان
-    setTimeout(() => {
-        notification.style.animation = 'slideOut 0.3s ease-in';
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
-            }
-        }, 300);
-    }, 5000);
+    document.getElementById('total-income').textContent = `${totalIncome} ريال`;
+    document.getElementById('total-expenses').textContent = `${totalExpenses} ريال`;
+    document.getElementById('net-profit').textContent = `${totalIncome - totalExpenses} ريال`;
+    document.getElementById('pending-income').textContent = `${pendingIncome} ريال`;
 }
 
-function getNotificationIcon(type) {
-    const icons = {
-        success: '✅',
-        error: '❌',
-        warning: '⚠️',
-        info: 'ℹ️'
-    };
-    return icons[type] || '💡';
-}
-
-function getNotificationColor(type) {
-    const colors = {
-        success: '#27ae60',
-        error: '#e74c3c',
-        warning: '#f39c12',
-        info: '#3498db'
-    };
-    return colors[type] || '#3498db';
-}
-
-// دالات مساعدة
+/**
+ * دوال مساعدة عامة
+ */
 function getRoleDisplayName(role) {
-    const roleNames = {
+    const roles = {
         'admin': 'مدير النظام',
         'doctor': 'طبيب',
         'patient': 'مريض',
         'accountant': 'محاسب'
     };
-    return roleNames[role] || role;
+    return roles[role] || role;
+}
+
+function showNotification(message, type = 'info') {
+    // إنشاء عنصر الإشعار
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <span class="notification-message">${message}</span>
+        <button class="notification-close" onclick="this.parentElement.remove()">×</button>
+    `;
+    
+    // إضافة الإشعار إلى الصفحة
+    const container = document.getElementById('notifications-container') || createNotificationsContainer();
+    container.appendChild(notification);
+    
+    // إزالة الإشعار تلقائياً بعد 5 ثواني
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
+function createNotificationsContainer() {
+    const container = document.createElement('div');
+    container.id = 'notifications-container';
+    container.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 10000;
+        max-width: 400px;
+    `;
+    document.body.appendChild(container);
+    return container;
+}
+
+function saveUserSession(user) {
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    localStorage.setItem('userSession', 'active');
+    localStorage.setItem('lastLogin', new Date().toISOString());
+}
+
+function clearUserSession() {
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('userSession');
 }
 
 function updateSessionStatus() {
@@ -896,102 +903,126 @@ function updateSessionStatus() {
     }
 }
 
-// التهيئة
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Health App Initialized with Session Management');
-    
-    // محاولة تحميل جلسة المستخدم المحفوظة
-    const savedUser = loadUserSession();
-    
-    if (savedUser && savedUser.id) {
-        console.log('✅ تم العثور على جلسة مستخدم محفوظة:', savedUser.name);
-        
-        // التحقق من صحة الجلسة
-        if (validateUserSession()) {
-            // تحديث المستخدم الحالي
-            currentUser = savedUser;
-            
-            // عرض لوحة التحكم المناسبة
-            showDashboard(savedUser.role);
-            showNotification(`مرحباً بعودتك ${savedUser.name}!`, 'success');
-            
-            // تحديث معلومات المستخدم في الواجهة
-            updateUserInfo(savedUser);
-        } else {
-            console.log('❌ جلسة غير صالحة');
-            clearUserSession();
-        }
-    } else {
-        // إذا لم توجد جلسة محفوظة، عرض صفحة الدخول
-        console.log('ℹ️ لا توجد جلسة مستخدم محفوظة');
-        document.getElementById('login-page').classList.remove('hidden');
-    }
-    
-    // تحديث تاريخ اليوم
-    const today = new Date().toLocaleDateString('ar-EG', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
+function logUserActivity(userId, action, description) {
+    const activities = JSON.parse(localStorage.getItem('userActivities')) || [];
+    activities.push({
+        userId,
+        action,
+        description,
+        timestamp: new Date().toISOString()
     });
-    
-    const todayElement = document.getElementById('doctor-today-date');
-    if (todayElement) {
-        todayElement.textContent = today;
-    }
-    
-    // تطبيق إعدادات التطبيق إذا كانت موجودة
-    if (typeof window.adminSystem !== 'undefined') {
-        setTimeout(() => {
-            window.adminSystem.applyAppSettings();
-        }, 100);
-    }
-    
-    // تحميل الإحصائيات الأولية
-    loadInitialStats();
-});
+    localStorage.setItem('userActivities', JSON.stringify(activities));
+}
 
-// تحميل الإحصائيات الأولية
-function loadInitialStats() {
-    try {
-        // تحميل إحصائيات من localStorage إذا وجدت
-        const savedStats = sessionManager.loadAppStatistics();
-        if (savedStats) {
-            console.log('📊 إحصائيات التطبيق:', savedStats);
-        }
-    } catch (error) {
-        console.error('❌ خطأ في تحميل الإحصائيات:', error);
+// دوال تفاعلية
+function bookWithDoctor(doctorId) {
+    const doctor = appData.doctors.find(d => d.id === doctorId);
+    if (doctor) {
+        showNotification(`جاري فتح نموذج الحجز مع ${doctor.name}`, 'info');
     }
 }
 
-// إضافة أنيميشن للإشعارات
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes slideIn {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
+function viewDoctorProfile(doctorId) {
+    const doctor = appData.doctors.find(d => d.id === doctorId);
+    if (doctor) {
+        showNotification(`عرض ملف الدكتور: ${doctor.name}`, 'info');
+    }
+}
+
+function cancelPatientAppointment(appointmentId) {
+    if (confirm('هل أنت متأكد من إلغاء هذا الموعد؟')) {
+        const appointment = appData.appointments.find(apt => apt.id === appointmentId);
+        if (appointment) {
+            appointment.status = 'ملغي';
+            showNotification('تم إلغاء الموعد بنجاح', 'success');
+            updatePatientAppointments();
         }
-        to {
-            transform: translateX(0);
-            opacity: 1;
+    }
+}
+
+function viewClinicOnMap(clinicId) {
+    const clinic = appData.clinics.find(c => c.id === clinicId);
+    if (clinic) {
+        showNotification(`عرض عيادة ${clinic.name} على الخريطة`, 'info');
+    }
+}
+
+function callClinic(phone) {
+    showNotification(`جاري الاتصال بالرقم: ${phone}`, 'info');
+}
+
+function bookNewAppointment() {
+    showNotification('جاري فتح نموذج حجز موعد جديد', 'info');
+}
+
+function editTransaction(transactionId) {
+    showNotification(`تعديل المعاملة رقم: ${transactionId}`, 'info');
+}
+
+function deleteTransaction(transactionId) {
+    if (confirm('هل أنت متأكد من حذف هذه المعاملة؟')) {
+        showNotification('تم حذف المعاملة', 'success');
+    }
+}
+
+// دوال احتياطية للواجهات غير المكتملة
+function showEditUserForm(userId) {
+    showNotification('جاري فتح نموذج تعديل المستخدم', 'info');
+}
+
+function showSecurityForm(userId) {
+    showNotification('جاري فتح إعدادات الأمان', 'info');
+}
+
+function deleteUser(userId) {
+    if (confirm('هل أنت متأكد من حذف هذا المستخدم؟')) {
+        showNotification('تم حذف المستخدم', 'success');
+    }
+}
+
+function confirmAppointment(appointmentId) {
+    const appointment = appData.appointments.find(apt => apt.id === appointmentId);
+    if (appointment) {
+        appointment.status = 'مؤكد';
+        showNotification('تم تأكيد الموعد', 'success');
+        updateDoctorAppointments();
+    }
+}
+
+function rescheduleAppointment(appointmentId) {
+    showNotification('جاري فتح نموذج إعادة جدولة الموعد', 'info');
+}
+
+function cancelAppointment(appointmentId) {
+    if (confirm('هل أنت متأكد من إلغاء هذا الموعد؟')) {
+        const appointment = appData.appointments.find(apt => apt.id === appointmentId);
+        if (appointment) {
+            appointment.status = 'ملغي';
+            showNotification('تم إلغاء الموعد', 'success');
+            updateDoctorAppointments();
         }
+    }
+}
+
+function viewPatientHistory(patientId) {
+    showNotification('جاري فتح السجل الطبي للمريض', 'info');
+}
+
+function addAppointmentForPatient(patientId) {
+    showNotification('جاري فتح نموذج إضافة موعد للمريض', 'info');
+}
+
+// تهيئة التطبيق عند التحميل
+document.addEventListener('DOMContentLoaded', function() {
+    // التحقق من وجود جلسة نشطة
+    const savedUser = localStorage.getItem('currentUser');
+    if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        showDashboard(currentUser.role);
+        updateUserInfo(currentUser);
+    } else {
+        showDashboard('user-type-selection');
     }
     
-    @keyframes slideOut {
-        from {
-            transform: translateX(0);
-            opacity: 1;
-        }
-        to {
-            transform: translateX(100%);
-            opacity: 0;
-        }
-    }
-`;
-document.head.appendChild(style);
-
-// جعل المتغيرات متاحة globally للاستخدام في الملفات الأخرى
-window.users = users;
-window.appData = appData;
-window.currentUser = currentUser;
+    console.log('🚀 نظام إدارة المستشفيات المتكامل جاهز للعمل!');
+});
