@@ -357,19 +357,32 @@
             padding: 2rem;
             margin: 2rem 0;
             box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            height: 400px;
+            height: 500px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #2c5aa0 0%, #1e88e5 100%);
-            color: white;
-            text-align: center;
         }
 
         .map-title {
             font-size: 1.5em;
             margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        #google-map {
+            flex: 1;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .map-placeholder {
+            flex: 1;
+            background: linear-gradient(135deg, #2c5aa0 0%, #1e88e5 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            text-align: center;
         }
 
         .cities-grid {
@@ -422,6 +435,10 @@
             white-space: nowrap;
         }
 
+        .nav-btn:hover {
+            border-color: var(--primary-color);
+        }
+
         .nav-btn.active {
             background: var(--primary-color);
             color: white;
@@ -430,6 +447,14 @@
 
         .dashboard-content {
             padding: 2rem 0;
+        }
+
+        .admin-section {
+            display: none;
+        }
+
+        .admin-section.active {
+            display: block;
         }
 
         .stats-grid {
@@ -445,6 +470,12 @@
             border-radius: 12px;
             box-shadow: 0 3px 15px rgba(0,0,0,0.1);
             text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
         }
 
         .stat-number {
@@ -452,6 +483,34 @@
             font-weight: bold;
             color: var(--primary-color);
             margin-bottom: 0.5rem;
+        }
+
+        .admin-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .action-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-color);
+        }
+
+        .action-icon {
+            font-size: 2.5em;
+            margin-bottom: 1rem;
         }
 
         /* واجهة الطبيب */
@@ -563,6 +622,8 @@
             }
         }
     </style>
+    <!-- إضافة مكتبة خرائط جوجل -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC0mRjMl03l2JXqXxQ2m8K6Q6X6X6X6X6X&callback=initMap" async defer></script>
 </head>
 <body>
     <!-- شاشة تسجيل الدخول -->
@@ -728,14 +789,14 @@
 
         <div class="yemen-map">
             <div class="map-title">🗺️ خريطة العيادات في اليمن</div>
-            <p>اختر المدينة لعرض العيادات المتاحة</p>
-            <div class="cities-grid">
-                <div class="city-btn" onclick="showCityClinics('sanaa')">صنعاء</div>
-                <div class="city-btn" onclick="showCityClinics('aden')">عدن</div>
-                <div class="city-btn" onclick="showCityClinics('taiz')">تعز</div>
-                <div class="city-btn" onclick="showCityClinics('hodeidah')">الحديدة</div>
-                <div class="city-btn" onclick="showCityClinics('ibb')">إب</div>
-                <div class="city-btn" onclick="showCityClinics('dhamar')">ذمار</div>
+            <div id="google-map">
+                <div class="map-placeholder" id="map-placeholder">
+                    <div>
+                        <h3>خريطة جوجل ماب</h3>
+                        <p>جاري تحميل الخريطة...</p>
+                        <button class="btn primary" onclick="loadGoogleMap()">تحميل الخريطة</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -755,15 +816,17 @@
 
         <nav class="admin-nav">
             <button class="nav-btn active" onclick="showAdminSection('overview')">📊 النظرة العامة</button>
-            <button class="nav-btn" onclick="showAdminSection('users')">👥 المستخدمين</button>
-            <button class="nav-btn" onclick="showAdminSection('doctors')">🩺 الأطباء</button>
-            <button class="nav-btn" onclick="showAdminSection('appointments')">📅 المواعيد</button>
-            <button class="nav-btn" onclick="showAdminSection('finance')">💰 المالية</button>
+            <button class="nav-btn" onclick="showAdminSection('users')">👥 إدارة المستخدمين</button>
+            <button class="nav-btn" onclick="showAdminSection('doctors')">🩺 إدارة الأطباء</button>
+            <button class="nav-btn" onclick="showAdminSection('appointments')">📅 إدارة المواعيد</button>
+            <button class="nav-btn" onclick="showAdminSection('finance')">💰 التقارير المالية</button>
+            <button class="nav-btn" onclick="showAdminSection('settings')">⚙️ إعدادات النظام</button>
         </nav>
 
         <div class="dashboard-content">
-            <div id="admin-overview">
-                <h2>النظرة العامة على النظام</h2>
+            <!-- قسم النظرة العامة -->
+            <div id="admin-overview" class="admin-section active">
+                <h2>📊 النظرة العامة على النظام</h2>
                 <div class="stats-grid">
                     <div class="stat-card">
                         <div class="stat-number">1,247</div>
@@ -778,9 +841,187 @@
                         <div>مواعيد اليوم</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-number">125,430</div>
-                        <div>الإيرادات (ر.س)</div>
+                        <div class="stat-number">125,430 ر.س</div>
+                        <div>الإيرادات</div>
                     </div>
+                </div>
+
+                <div class="admin-actions">
+                    <div class="action-card" onclick="showAdminSection('users')">
+                        <div class="action-icon">👥</div>
+                        <h3>إدارة المستخدمين</h3>
+                        <p>إضافة، تعديل، حذف المستخدمين</p>
+                    </div>
+                    <div class="action-card" onclick="showAdminSection('doctors')">
+                        <div class="action-icon">🩺</div>
+                        <h3>إدارة الأطباء</h3>
+                        <p>إضافة أطباء جدد وإدارة التخصصات</p>
+                    </div>
+                    <div class="action-card" onclick="showAdminSection('appointments')">
+                        <div class="action-icon">📅</div>
+                        <h3>المواعيد</h3>
+                        <p>عرض وإدارة جميع المواعيد</p>
+                    </div>
+                    <div class="action-card" onclick="showAdminSection('finance')">
+                        <div class="action-icon">💰</div>
+                        <h3>التقارير المالية</h3>
+                        <p>الإيرادات والمصروفات والتقارير</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- قسم إدارة المستخدمين -->
+            <div id="admin-users" class="admin-section">
+                <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h2>👥 إدارة المستخدمين</h2>
+                    <button class="btn success" onclick="addNewUser()">➕ إضافة مستخدم</button>
+                </div>
+                <div class="appointments-table">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>الاسم</th>
+                                <th>البريد الإلكتروني</th>
+                                <th>نوع المستخدم</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>أحمد محمد</td>
+                                <td>ahmed@example.com</td>
+                                <td>مريض</td>
+                                <td>نشط</td>
+                                <td>
+                                    <button class="btn warning" onclick="editUser(1)">تعديل</button>
+                                    <button class="btn danger" onclick="deleteUser(1)">حذف</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>د. فاطمة علي</td>
+                                <td>fatima@example.com</td>
+                                <td>طبيب</td>
+                                <td>نشط</td>
+                                <td>
+                                    <button class="btn warning" onclick="editUser(2)">تعديل</button>
+                                    <button class="btn danger" onclick="deleteUser(2)">حذف</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- قسم إدارة الأطباء -->
+            <div id="admin-doctors" class="admin-section">
+                <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                    <h2>🩺 إدارة الأطباء</h2>
+                    <button class="btn success" onclick="addNewDoctor()">➕ إضافة طبيب</button>
+                </div>
+                <div class="appointments-table">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>الطبيب</th>
+                                <th>التخصص</th>
+                                <th>العيادة</th>
+                                <th>التقييم</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>د. أحمد محمد</td>
+                                <td>طب القلب</td>
+                                <td>صنعاء - حي التحرير</td>
+                                <td>⭐ 4.8</td>
+                                <td>نشط</td>
+                                <td>
+                                    <button class="btn warning" onclick="editDoctor(1)">تعديل</button>
+                                    <button class="btn danger" onclick="deleteDoctor(1)">حذف</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- قسم إدارة المواعيد -->
+            <div id="admin-appointments" class="admin-section">
+                <h2>📅 إدارة المواعيد</h2>
+                <div class="appointments-table">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>المريض</th>
+                                <th>الطبيب</th>
+                                <th>التاريخ</th>
+                                <th>الوقت</th>
+                                <th>نوع الموعد</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>محمد عبدالله</td>
+                                <td>د. أحمد محمد</td>
+                                <td>2024-01-15</td>
+                                <td>10:00 ص</td>
+                                <td>عادي</td>
+                                <td>مؤكد</td>
+                                <td>
+                                    <button class="btn success" onclick="confirmAppointment(1)">تأكيد</button>
+                                    <button class="btn danger" onclick="cancelAppointment(1)">إلغاء</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- قسم التقارير المالية -->
+            <div id="admin-finance" class="admin-section">
+                <h2>💰 التقارير المالية</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">125,430 ر.س</div>
+                        <div>إجمالي الإيرادات</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">45,620 ر.س</div>
+                        <div>المصروفات</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">79,810 ر.س</div>
+                        <div>صافي الربح</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">+15%</div>
+                        <div>نمو هذا الشهر</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- قسم إعدادات النظام -->
+            <div id="admin-settings" class="admin-section">
+                <h2>⚙️ إعدادات النظام</h2>
+                <div class="appointments-table">
+                    <div class="form-group">
+                        <label>اسم النظام</label>
+                        <input type="text" value="شفاء - نظام حجز المواعيد" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>البريد الإلكتروني للإدارة</label>
+                        <input type="email" value="admin@shifa.com" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>رقم هاتف الدعم</label>
+                        <input type="tel" value="771234567" class="form-control">
+                    </div>
+                    <button class="btn success" onclick="saveSettings()">💾 حفظ الإعدادات</button>
                 </div>
             </div>
         </div>
@@ -818,8 +1059,8 @@
                         <td>عادي</td>
                         <td>في الانتظار</td>
                         <td>
-                            <button class="btn success">بدء الكشف</button>
-                            <button class="btn danger">إلغاء</button>
+                            <button class="btn success" onclick="startAppointment(1)">بدء الكشف</button>
+                            <button class="btn danger" onclick="cancelAppointment(1)">إلغاء</button>
                         </td>
                     </tr>
                     <tr>
@@ -828,8 +1069,8 @@
                         <td>طارئ</td>
                         <td>مؤكد</td>
                         <td>
-                            <button class="btn success">بدء الكشف</button>
-                            <button class="btn danger">إلغاء</button>
+                            <button class="btn success" onclick="startAppointment(2)">بدء الكشف</button>
+                            <button class="btn danger" onclick="cancelAppointment(2)">إلغاء</button>
                         </td>
                     </tr>
                 </tbody>
@@ -962,6 +1203,7 @@
         // المتغيرات العامة
         let currentUserType = '';
         let currentSpecialty = '';
+        let googleMap = null;
 
         // وظائف تسجيل الدخول
         function selectUserType(type) {
@@ -993,11 +1235,10 @@
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
             
-            // محاكاة عملية تسجيل الدخول
             if (email && password && currentUserType) {
                 showDashboard(currentUserType);
             } else {
-                alert('يرجى ملء جميع الحالات واختيار نوع المستخدم');
+                alert('يرجى ملء جميع الحقول واختيار نوع المستخدم');
             }
         }
 
@@ -1021,10 +1262,14 @@
         function showDashboard(userType) {
             document.getElementById('login-screen').classList.add('hidden');
             document.getElementById(`${userType}-dashboard`).classList.remove('hidden');
+            
+            if (userType === 'patient') {
+                loadGoogleMap();
+            }
         }
 
         function logout() {
-            document.querySelectorAll('.dashboard').forEach(dashboard => {
+            document.querySelectorAll('[id$="dashboard"]').forEach(dashboard => {
                 dashboard.classList.add('hidden');
             });
             document.getElementById('login-screen').classList.remove('hidden');
@@ -1160,6 +1405,10 @@
             `;
             
             document.getElementById('booking-modal').style.display = 'block';
+            
+            // تعيين التاريخ الحالي كحد أدنى
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('booking-date').min = today;
         }
 
         function bookAppointment(event, doctorId) {
@@ -1174,7 +1423,6 @@
         }
 
         function filterByLocation() {
-            // محاكاة عملية التصفية
             const governorate = document.getElementById('governorate-filter').value;
             const city = document.getElementById('city-filter').value;
             
@@ -1183,17 +1431,121 @@
             }
         }
 
-        function showCityClinics(city) {
-            alert(`عرض العيادات في ${city}`);
+        // وظائف خرائط جوجل
+        function loadGoogleMap() {
+            const mapPlaceholder = document.getElementById('map-placeholder');
+            const mapContainer = document.getElementById('google-map');
+            
+            mapPlaceholder.innerHTML = '<p>جاري تحميل الخريطة...</p>';
+            
+            try {
+                // إحداثيات اليمن
+                const yemenCoordinates = { lat: 15.5527, lng: 48.5164 };
+                
+                // إنشاء الخريطة
+                googleMap = new google.maps.Map(mapContainer, {
+                    zoom: 6,
+                    center: yemenCoordinates,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                });
+
+                // إضافة علامات للعيادات في المدن اليمنية
+                const clinics = [
+                    { name: "مستشفى الثورة - صنعاء", lat: 15.3694, lng: 44.1910 },
+                    { name: "مستشفى الجمهوري - عدن", lat: 12.7855, lng: 45.0187 },
+                    { name: "مستشفى التعزية - تعز", lat: 13.5789, lng: 44.0190 },
+                    { name: "مستشفى البحر - الحديدة", lat: 14.8022, lng: 42.9540 },
+                    { name: "مستشفى إب العام - إب", lat: 13.9667, lng: 44.1833 }
+                ];
+
+                clinics.forEach(clinic => {
+                    new google.maps.Marker({
+                        position: { lat: clinic.lat, lng: clinic.lng },
+                        map: googleMap,
+                        title: clinic.name
+                    });
+                });
+
+                mapPlaceholder.style.display = 'none';
+                mapContainer.style.display = 'block';
+
+            } catch (error) {
+                mapPlaceholder.innerHTML = `
+                    <div>
+                        <h3>⚠️ تعذر تحميل الخريطة</h3>
+                        <p>يمكنك استخدام الخدمات التالية:</p>
+                        <div style="margin-top: 1rem;">
+                            <button class="btn primary" onclick="window.open('https://maps.google.com', '_blank')">
+                                فتح جوجل ماب
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
         }
 
+        // وظائف واجهة الإدمن
         function showAdminSection(section) {
-            // محاكاة تغيير الأقسام في لوحة المدير
+            // إخفاء جميع الأقسام
+            document.querySelectorAll('.admin-section').forEach(sec => {
+                sec.classList.remove('active');
+            });
+            
+            // إظهار القسم المطلوب
+            document.getElementById(`admin-${section}`).classList.add('active');
+            
+            // تحديث الأزرار النشطة
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
             event.target.classList.add('active');
-            alert(`عرض قسم ${section}`);
+        }
+
+        // وظائف الإدارة
+        function addNewUser() {
+            alert('فتح نموذج إضافة مستخدم جديد');
+        }
+
+        function editUser(userId) {
+            alert(`تعديل بيانات المستخدم رقم ${userId}`);
+        }
+
+        function deleteUser(userId) {
+            if (confirm('هل أنت متأكد من حذف هذا المستخدم؟')) {
+                alert(`تم حذف المستخدم رقم ${userId}`);
+            }
+        }
+
+        function addNewDoctor() {
+            alert('فتح نموذج إضافة طبيب جديد');
+        }
+
+        function editDoctor(doctorId) {
+            alert(`تعديل بيانات الطبيب رقم ${doctorId}`);
+        }
+
+        function deleteDoctor(doctorId) {
+            if (confirm('هل أنت متأكد من حذف هذا الطبيب؟')) {
+                alert(`تم حذف الطبيب رقم ${doctorId}`);
+            }
+        }
+
+        function confirmAppointment(appointmentId) {
+            alert(`تم تأكيد الموعد رقم ${appointmentId}`);
+        }
+
+        function cancelAppointment(appointmentId) {
+            if (confirm('هل أنت متأكد من إلغاء هذا الموعد؟')) {
+                alert(`تم إلغاء الموعد رقم ${appointmentId}`);
+            }
+        }
+
+        function startAppointment(appointmentId) {
+            alert(`بدء الكشف للموعد رقم ${appointmentId}`);
+        }
+
+        function saveSettings() {
+            alert('تم حفظ إعدادات النظام بنجاح');
         }
 
         // إغلاق النماذج عند النقر خارجها
@@ -1203,8 +1555,9 @@
             }
         }
 
-        // تعيين التاريخ الحالي كحد أدنى لحجز المواعيد
+        // تهيئة الخريطة عند تحميل الصفحة
         document.addEventListener('DOMContentLoaded', function() {
+            // تعيين التاريخ الحالي كحد أدنى لحجز المواعيد
             const today = new Date().toISOString().split('T')[0];
             if (document.getElementById('booking-date')) {
                 document.getElementById('booking-date').min = today;
