@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>حجز مواعيد الأطباء - دكتورنا</title>
+    <title>شفاء - نظام حجز المواعيد الطبية في اليمن</title>
     <style>
         :root {
-            --primary-color: #2563eb;
-            --secondary-color: #3b82f6;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-            --light-bg: #f8fafc;
-            --dark-text: #1e293b;
-            --border-color: #e2e8f0;
+            --primary-color: #2c5aa0;
+            --secondary-color: #1e88e5;
+            --success-color: #43a047;
+            --warning-color: #ff9800;
+            --danger-color: #e53935;
+            --light-bg: #f8f9fa;
+            --dark-text: #2c3e50;
+            --border-color: #dee2e6;
         }
 
         * {
@@ -29,24 +29,159 @@
             line-height: 1.6;
         }
 
-        .app-container {
-            min-height: 100vh;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
+        .hidden {
+            display: none !important;
         }
 
-        /* الهيدر */
+        /* شاشة تسجيل الدخول */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #2c5aa0 0%, #1e88e5 100%);
+            padding: 1rem;
+        }
+
+        .login-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header h1 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .login-header .subtitle {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .user-type-selector {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .user-type-btn {
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .user-type-btn:hover {
+            border-color: var(--primary-color);
+        }
+
+        .user-type-btn.selected {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-text);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn.primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn.success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn.warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .btn.danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn.secondary {
+            background: var(--light-bg);
+            color: var(--dark-text);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .toggle-form {
+            color: var(--primary-color);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* الهيدر المشترك */
         .app-header {
             background: white;
-            padding: 1rem 0;
+            padding: 1rem 2rem;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -63,144 +198,85 @@
             color: var(--primary-color);
         }
 
-        .user-actions {
+        .user-info {
             display: flex;
+            align-items: center;
             gap: 1rem;
-            align-items: center;
         }
 
-        .btn {
-            padding: 0.7rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9em;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
+        /* واجهة المريض */
+        .patient-dashboard {
+            min-height: 100vh;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
         }
 
-        .btn.primary {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .btn.secondary {
-            background: var(--light-bg);
-            color: var(--dark-text);
-            border: 1px solid var(--border-color);
-        }
-
-        .btn.success {
-            background: var(--success-color);
-            color: white;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        /* البحث */
-        .search-section {
+        .location-selector {
             background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            margin: 2rem 0;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        .search-form {
+        .location-filters {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 1rem;
-            margin-bottom: 1.5rem;
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            color: var(--dark-text);
-        }
-
-        .form-group input,
-        .form-group select {
-            padding: 0.8rem;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 1em;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            border-color: var(--primary-color);
-            outline: none;
-        }
-
-        /* الأقسام الرئيسية */
-        .main-nav {
-            display: flex;
-            gap: 1rem;
-            margin: 2rem 0;
-            flex-wrap: wrap;
-        }
-
-        .nav-tab {
-            padding: 1rem 2rem;
-            background: white;
-            border: 2px solid var(--border-color);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-            flex: 1;
-            min-width: 150px;
-        }
-
-        .nav-tab.active {
-            background: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-        }
-
-        .nav-tab:hover {
-            border-color: var(--primary-color);
-        }
-
-        /* قسم الأطباء */
-        .doctors-grid {
+        .specialties-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 1.5rem;
             margin: 2rem 0;
         }
 
-        .doctor-card {
+        .specialty-card {
             background: white;
-            border-radius: 15px;
             padding: 1.5rem;
+            border-radius: 15px;
             box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            cursor: pointer;
             transition: all 0.3s;
             border: 2px solid transparent;
         }
 
-        .doctor-card:hover {
+        .specialty-card:hover {
             transform: translateY(-5px);
             border-color: var(--primary-color);
         }
 
-        .doctor-header {
+        .specialty-icon {
+            font-size: 3em;
+            margin-bottom: 1rem;
+        }
+
+        .doctors-list {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .doctor-card {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+
+        .doctor-card:hover {
+            background: var(--light-bg);
+        }
+
+        .doctor-card:last-child {
+            border-bottom: none;
         }
 
         .doctor-avatar {
@@ -214,74 +290,179 @@
             justify-content: center;
             font-size: 2em;
             font-weight: bold;
+            flex-shrink: 0;
         }
 
-        .doctor-info h3 {
-            color: var(--dark-text);
-            margin-bottom: 0.5rem;
-        }
-
-        .doctor-specialty {
-            background: var(--primary-color);
-            color: white;
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8em;
-            display: inline-block;
+        .doctor-info {
+            flex: 1;
         }
 
         .doctor-rating {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin: 0.5rem 0;
             color: var(--warning-color);
+            margin: 0.3rem 0;
         }
 
-        .doctor-details {
-            margin: 1rem 0;
+        .appointment-types {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
         }
 
-        .detail-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .detail-item:last-child {
-            border-bottom: none;
-        }
-
-        .available-slots {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            margin: 1rem 0;
-        }
-
-        .time-slot {
-            padding: 0.5rem 1rem;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
+        .appointment-type {
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            text-align: center;
             cursor: pointer;
             transition: all 0.3s;
-            font-size: 0.9em;
         }
 
-        .time-slot:hover {
+        .appointment-type:hover {
             border-color: var(--primary-color);
-            background: var(--light-bg);
         }
 
-        .time-slot.selected {
+        .appointment-type.selected {
             background: var(--primary-color);
             color: white;
             border-color: var(--primary-color);
         }
 
-        /* قسم المواعيد */
-        .appointments-list {
+        .appointment-type.emergency {
+            border-color: var(--danger-color);
+        }
+
+        .appointment-type.emergency.selected {
+            background: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+
+        .price {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 0.5rem;
+        }
+
+        .normal-price {
+            color: var(--success-color);
+        }
+
+        .emergency-price {
+            color: var(--danger-color);
+        }
+
+        .yemen-map {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #2c5aa0 0%, #1e88e5 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .map-title {
+            font-size: 1.5em;
+            margin-bottom: 1rem;
+        }
+
+        .cities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .city-btn {
+            padding: 0.8rem;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .city-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        /* واجهة الإدمن */
+        .admin-dashboard {
+            min-height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .admin-nav {
+            background: white;
+            padding: 1rem 2rem;
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            padding: 0.7rem 1.5rem;
+            border: 2px solid var(--border-color);
+            border-radius: 25px;
+            background: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .nav-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .dashboard-content {
+            padding: 2rem 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        /* واجهة الطبيب */
+        .doctor-dashboard {
+            min-height: 100vh;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .appointments-table {
             background: white;
             border-radius: 15px;
             padding: 2rem;
@@ -289,54 +470,36 @@
             box-shadow: 0 5px 20px rgba(0,0,0,0.1);
         }
 
-        .appointment-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem;
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .table th, .table td {
+            padding: 1rem;
+            text-align: right;
             border-bottom: 1px solid var(--border-color);
-            transition: all 0.3s;
         }
 
-        .appointment-item:hover {
+        .table th {
             background: var(--light-bg);
+            font-weight: 600;
         }
 
-        .appointment-item:last-child {
-            border-bottom: none;
+        /* واجهة المحاسب */
+        .accountant-dashboard {
+            min-height: 100vh;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
         }
 
-        .appointment-info h4 {
-            margin-bottom: 0.5rem;
-        }
-
-        .appointment-meta {
-            display: flex;
-            gap: 1rem;
-            color: #666;
-            font-size: 0.9em;
-        }
-
-        .appointment-status {
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8em;
-            font-weight: 500;
-        }
-
-        .status-confirmed {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .status-pending {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .status-cancelled {
-            background: #fee2e2;
-            color: #991b1b;
+        .financial-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
         }
 
         /* النماذج */
@@ -378,157 +541,367 @@
 
         /* الاستجابة */
         @media (max-width: 768px) {
-            .header-content {
+            .user-type-selector {
+                grid-template-columns: 1fr;
+            }
+            
+            .appointment-types {
+                grid-template-columns: 1fr;
+            }
+            
+            .doctor-card {
                 flex-direction: column;
                 text-align: center;
             }
-
-            .search-form {
-                grid-template-columns: 1fr;
-            }
-
-            .doctors-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .appointment-item {
+            
+            .admin-nav {
                 flex-direction: column;
-                gap: 1rem;
-                text-align: center;
             }
-
-            .appointment-meta {
-                justify-content: center;
+            
+            .cities-grid {
+                grid-template-columns: repeat(3, 1fr);
             }
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <!-- الهيدر -->
+    <!-- شاشة تسجيل الدخول -->
+    <div id="login-screen" class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <h1>🏥 شفاء</h1>
+                <p class="subtitle">نظام حجز المواعيد الطبية في اليمن</p>
+            </div>
+
+            <div class="user-type-selector">
+                <div class="user-type-btn" onclick="selectUserType('patient')">👨‍⚕️ مريض</div>
+                <div class="user-type-btn" onclick="selectUserType('doctor')">🩺 طبيب</div>
+                <div class="user-type-btn" onclick="selectUserType('admin')">⚙️ مدير النظام</div>
+                <div class="user-type-btn" onclick="selectUserType('accountant')">💰 محاسب</div>
+            </div>
+
+            <!-- نموذج تسجيل الدخول -->
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>البريد الإلكتروني</label>
+                    <input type="email" id="login-email" placeholder="example@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" id="login-password" placeholder="أدخل كلمة المرور" required>
+                </div>
+                <button type="submit" class="btn primary" style="width: 100%;">تسجيل الدخول</button>
+            </form>
+
+            <!-- نموذج إنشاء حساب -->
+            <form id="register-form" class="hidden" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>الاسم الكامل</label>
+                    <input type="text" id="register-name" placeholder="أحمد محمد عبدالله" required>
+                </div>
+                <div class="form-group">
+                    <label>العمر</label>
+                    <input type="number" id="register-age" placeholder="30" min="1" max="120" required>
+                </div>
+                <div class="form-group">
+                    <label>رقم الهاتف</label>
+                    <input type="tel" id="register-phone" placeholder="771234567" required>
+                </div>
+                <div class="form-group">
+                    <label>المحافظة</label>
+                    <select id="register-governorate" required>
+                        <option value="">اختر المحافظة</option>
+                        <option value="sanaa">أمانة العاصمة</option>
+                        <option value="aden">عدن</option>
+                        <option value="taiz">تعز</option>
+                        <option value="hodeidah">الحديدة</option>
+                        <option value="ibb">إب</option>
+                        <option value="dhamar">ذمار</option>
+                        <option value="hajjah">حجة</option>
+                        <option value="hadramout">حضرموت</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>البريد الإلكتروني</label>
+                    <input type="email" id="register-email" placeholder="example@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>كلمة المرور</label>
+                    <input type="password" id="register-password" placeholder="كلمة مرور قوية" required>
+                </div>
+                <button type="submit" class="btn success" style="width: 100%;">إنشاء حساب</button>
+            </form>
+
+            <div class="login-footer">
+                <span id="toggle-text">ليس لديك حساب؟</span>
+                <span class="toggle-form" onclick="toggleAuthForm()">إنشاء حساب جديد</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- واجهة المريض -->
+    <div id="patient-dashboard" class="patient-dashboard hidden">
         <header class="app-header">
-            <div class="header-content">
-                <div class="logo">
-                    <span>🏥</span>
-                    <span>دكتورنا</span>
-                </div>
-                <div class="user-actions">
-                    <button class="btn secondary" onclick="showSection('doctors')">👨‍⚕️ الأطباء</button>
-                    <button class="btn secondary" onclick="showSection('appointments')">📅 مواعيدي</button>
-                    <button class="btn primary" onclick="showLoginModal()">🔐 تسجيل الدخول</button>
-                </div>
+            <div class="logo">
+                <span>🏥</span>
+                <span>شفاء - لوحة المريض</span>
+            </div>
+            <div class="user-info">
+                <span>مرحباً، أحمد محمد</span>
+                <button class="btn danger" onclick="logout()">تسجيل الخروج</button>
             </div>
         </header>
 
-        <!-- قسم البحث -->
-        <section class="search-section">
-            <h2 style="margin-bottom: 1rem; text-align: center;">ابحث عن الطبيب المناسب</h2>
-            <div class="search-form">
+        <!-- فلتر الموقع -->
+        <div class="location-selector">
+            <h3>📍 اختر موقعك</h3>
+            <div class="location-filters">
                 <div class="form-group">
-                    <label>التخصص الطبي</label>
-                    <select id="specialty">
-                        <option value="">جميع التخصصات</option>
-                        <option value="cardiology">طب القلب</option>
-                        <option value="pediatrics">طب الأطفال</option>
-                        <option value="surgery">الجراحة</option>
-                        <option value="dentist">طب الأسنان</option>
-                        <option value="eyes">طب العيون</option>
+                    <label>المحافظة</label>
+                    <select id="governorate-filter" onchange="filterByLocation()">
+                        <option value="">جميع المحافظات</option>
+                        <option value="sanaa">أمانة العاصمة</option>
+                        <option value="aden">عدن</option>
+                        <option value="taiz">تعز</option>
+                        <option value="hodeidah">الحديدة</option>
+                        <option value="ibb">إب</option>
                     </select>
                 </div>
                 <div class="form-group">
                     <label>المدينة</label>
-                    <select id="city">
+                    <select id="city-filter" onchange="filterByLocation()">
                         <option value="">جميع المدن</option>
-                        <option value="riyadh">الرياض</option>
-                        <option value="jeddah">جدة</option>
-                        <option value="dammam">الدمام</option>
+                        <option value="sanaa">صنعاء</option>
+                        <option value="old-sanaa">صنعاء القديمة</option>
+                        <option value="crater">كريتر</option>
+                        <option value="al-mansoura">المنصورة</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label>التاريخ</label>
-                    <input type="date" id="appointment-date">
+            </div>
+        </div>
+
+        <section id="specialties-section">
+            <h2>التخصصات الطبية المتاحة</h2>
+            <div class="specialties-grid">
+                <div class="specialty-card" onclick="showDoctors('cardiology')">
+                    <div class="specialty-icon">❤️</div>
+                    <h3>طب القلب</h3>
+                    <p>أمراض القلب والشرايين وضغط الدم</p>
                 </div>
-                <div class="form-group">
-                    <label>&nbsp;</label>
-                    <button class="btn primary" style="padding: 0.8rem;" onclick="searchDoctors()">
-                        🔍 بحث
-                    </button>
+                <div class="specialty-card" onclick="showDoctors('pediatrics')">
+                    <div class="specialty-icon">👶</div>
+                    <h3>طب الأطفال</h3>
+                    <p>رعاية الأطفال والرضع والتطعيمات</p>
+                </div>
+                <div class="specialty-card" onclick="showDoctors('surgery')">
+                    <div class="specialty-icon">🦴</div>
+                    <h3>الجراحة العامة</h3>
+                    <p>العمليات الجراحية والمناظير</p>
+                </div>
+                <div class="specialty-card" onclick="showDoctors('eyes')">
+                    <div class="specialty-icon">👁️</div>
+                    <h3>طب العيون</h3>
+                    <p>أمراض العيون والنظر والليزر</p>
+                </div>
+                <div class="specialty-card" onclick="showDoctors('teeth')">
+                    <div class="specialty-icon">🦷</div>
+                    <h3>طب الأسنان</h3>
+                    <p>علاج الأسنان والتركيبات</p>
+                </div>
+                <div class="specialty-card" onclick="showDoctors('bones')">
+                    <div class="specialty-icon">🦵</div>
+                    <h3>العظام</h3>
+                    <p>كسور وإصابات العظام والمفاصل</p>
                 </div>
             </div>
         </section>
 
-        <!-- التنقل الرئيسي -->
-        <nav class="main-nav">
-            <div class="nav-tab active" onclick="showSection('doctors')">👨‍⚕️ الأطباء المتاحين</div>
-            <div class="nav-tab" onclick="showSection('appointments')">📅 مواعيدي</div>
-            <div class="nav-tab" onclick="showSection('medical-history')">📋 السجل الطبي</div>
-            <div class="nav-tab" onclick="showSection('clinics')">🏥 العيادات</div>
-        </nav>
-
-        <!-- قسم الأطباء -->
-        <section id="doctors-section" class="content-section">
-            <h2 style="margin-bottom: 1.5rem;">👨‍⚕️ الأطباء المتاحين</h2>
-            <div class="doctors-grid" id="doctors-grid">
+        <section id="doctors-section" class="hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 id="specialty-title">الأطباء المتاحين</h2>
+                <button class="btn secondary" onclick="showSpecialties()">← العودة للتخصصات</button>
+            </div>
+            <div class="doctors-list" id="doctors-list">
                 <!-- سيتم ملؤها بالبيانات -->
             </div>
         </section>
 
-        <!-- قسم المواعيد -->
-        <section id="appointments-section" class="content-section hidden">
-            <h2 style="margin-bottom: 1.5rem;">📅 مواعيدي</h2>
-            <div class="appointments-list" id="appointments-list">
-                <!-- سيتم ملؤها بالبيانات -->
+        <div class="yemen-map">
+            <div class="map-title">🗺️ خريطة العيادات في اليمن</div>
+            <p>اختر المدينة لعرض العيادات المتاحة</p>
+            <div class="cities-grid">
+                <div class="city-btn" onclick="showCityClinics('sanaa')">صنعاء</div>
+                <div class="city-btn" onclick="showCityClinics('aden')">عدن</div>
+                <div class="city-btn" onclick="showCityClinics('taiz')">تعز</div>
+                <div class="city-btn" onclick="showCityClinics('hodeidah')">الحديدة</div>
+                <div class="city-btn" onclick="showCityClinics('ibb')">إب</div>
+                <div class="city-btn" onclick="showCityClinics('dhamar')">ذمار</div>
             </div>
-        </section>
-
-        <!-- قسم السجل الطبي -->
-        <section id="medical-history-section" class="content-section hidden">
-            <div class="appointments-list">
-                <h3 style="margin-bottom: 1.5rem;">📋 السجل الطبي</h3>
-                <p style="text-align: center; color: #666; padding: 2rem;">
-                    يرجى تسجيل الدخول لعرض السجل الطبي
-                </p>
-            </div>
-        </section>
-
-        <!-- قسم العيادات -->
-        <section id="clinics-section" class="content-section hidden">
-            <div class="appointments-list">
-                <h3 style="margin-bottom: 1.5rem;">🏥 العيادات الشريكة</h3>
-                <p style="text-align: center; color: #666; padding: 2rem;">
-                    قائمة العيادات الشريكة ستظهر هنا
-                </p>
-            </div>
-        </section>
-    </div>
-
-    <!-- نموذج تسجيل الدخول -->
-    <div id="login-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>🔐 تسجيل الدخول</h3>
-                <button class="close-btn" onclick="closeModal('login-modal')">×</button>
-            </div>
-            <form onsubmit="handleLogin(event)">
-                <div class="form-group">
-                    <label>رقم الهاتف</label>
-                    <input type="tel" placeholder="05XXXXXXXX" required>
-                </div>
-                <div class="form-group">
-                    <label>كلمة المرور</label>
-                    <input type="password" placeholder="أدخل كلمة المرور" required>
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="btn primary" style="width: 100%;">تسجيل الدخول</button>
-                </div>
-                <div style="text-align: center; margin-top: 1rem;">
-                    <a href="#" style="color: var(--primary-color); text-decoration: none;">نسيت كلمة المرور؟</a>
-                </div>
-            </form>
         </div>
     </div>
 
-    <!-- نموذج حجز موعد -->
+    <!-- واجهة الإدمن -->
+    <div id="admin-dashboard" class="admin-dashboard hidden">
+        <header class="app-header">
+            <div class="logo">
+                <span>🏥</span>
+                <span>شفاء - لوحة المدير</span>
+            </div>
+            <div class="user-info">
+                <span>مدير النظام</span>
+                <button class="btn danger" onclick="logout()">تسجيل الخروج</button>
+            </div>
+        </header>
+
+        <nav class="admin-nav">
+            <button class="nav-btn active" onclick="showAdminSection('overview')">📊 النظرة العامة</button>
+            <button class="nav-btn" onclick="showAdminSection('users')">👥 المستخدمين</button>
+            <button class="nav-btn" onclick="showAdminSection('doctors')">🩺 الأطباء</button>
+            <button class="nav-btn" onclick="showAdminSection('appointments')">📅 المواعيد</button>
+            <button class="nav-btn" onclick="showAdminSection('finance')">💰 المالية</button>
+        </nav>
+
+        <div class="dashboard-content">
+            <div id="admin-overview">
+                <h2>النظرة العامة على النظام</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">1,247</div>
+                        <div>إجمالي المرضى</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">89</div>
+                        <div>عدد الأطباء</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">156</div>
+                        <div>مواعيد اليوم</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">125,430</div>
+                        <div>الإيرادات (ر.س)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- واجهة الطبيب -->
+    <div id="doctor-dashboard" class="doctor-dashboard hidden">
+        <header class="app-header">
+            <div class="logo">
+                <span>🏥</span>
+                <span>شفاء - لوحة الطبيب</span>
+            </div>
+            <div class="user-info">
+                <span>د. أحمد محمد - طب القلب</span>
+                <button class="btn danger" onclick="logout()">تسجيل الخروج</button>
+            </div>
+        </header>
+
+        <div class="appointments-table">
+            <h2>مواعيد اليوم</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>المريض</th>
+                        <th>الوقت</th>
+                        <th>نوع الموعد</th>
+                        <th>الحالة</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>محمد عبدالله</td>
+                        <td>10:00 ص</td>
+                        <td>عادي</td>
+                        <td>في الانتظار</td>
+                        <td>
+                            <button class="btn success">بدء الكشف</button>
+                            <button class="btn danger">إلغاء</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>فاطمة علي</td>
+                        <td>11:30 ص</td>
+                        <td>طارئ</td>
+                        <td>مؤكد</td>
+                        <td>
+                            <button class="btn success">بدء الكشف</button>
+                            <button class="btn danger">إلغاء</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- واجهة المحاسب -->
+    <div id="accountant-dashboard" class="accountant-dashboard hidden">
+        <header class="app-header">
+            <div class="logo">
+                <span>🏥</span>
+                <span>شفاء - لوحة المحاسب</span>
+            </div>
+            <div class="user-info">
+                <span>المحاسب - قسم المالية</span>
+                <button class="btn danger" onclick="logout()">تسجيل الخروج</button>
+            </div>
+        </header>
+
+        <div class="financial-stats">
+            <div class="stat-card">
+                <div class="stat-number">125,430 ر.س</div>
+                <div>إجمالي الإيرادات</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">45,620 ر.س</div>
+                <div>المصروفات</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">79,810 ر.س</div>
+                <div>صافي الربح</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">+15%</div>
+                <div>نمو هذا الشهر</div>
+            </div>
+        </div>
+
+        <div class="appointments-table">
+            <h2>آخر المعاملات المالية</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>رقم الفاتورة</th>
+                        <th>المريض</th>
+                        <th>المبلغ</th>
+                        <th>التاريخ</th>
+                        <th>الحالة</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>#00125</td>
+                        <td>محمد عبدالله</td>
+                        <td>450 ر.س</td>
+                        <td>2024-01-15</td>
+                        <td>مدفوعة</td>
+                    </tr>
+                    <tr>
+                        <td>#00124</td>
+                        <td>فاطمة علي</td>
+                        <td>650 ر.س</td>
+                        <td>2024-01-15</td>
+                        <td>مدفوعة</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- نموذج حجز الموعد -->
     <div id="booking-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -542,202 +915,211 @@
     </div>
 
     <script>
-        // بيانات الأطباء
-        const doctors = [
-            {
-                id: 1,
-                name: "د. أحمد محمد",
-                specialty: "طب القلب",
-                avatar: "د",
-                rating: 4.8,
-                experience: "10 سنوات",
-                location: "الرياض - حي العليا",
-                fee: "150 ر.س",
-                availableSlots: ["09:00 ص", "10:30 ص", "02:00 م", "04:30 م"]
-            },
-            {
-                id: 2,
-                name: "د. فاطمة علي",
-                specialty: "طب الأطفال",
-                avatar: "د",
-                rating: 4.9,
-                experience: "8 سنوات",
-                location: "جدة - حي الصفا",
-                fee: "120 ر.س",
-                availableSlots: ["08:00 ص", "11:00 ص", "03:00 م", "05:00 م"]
-            },
-            {
-                id: 3,
-                name: "د. خالد عبدالله",
-                specialty: "الجراحة العامة",
-                avatar: "د",
-                rating: 4.7,
-                experience: "12 سنوات",
-                location: "الدمام - حي الشاطئ",
-                fee: "200 ر.س",
-                availableSlots: ["10:00 ص", "01:00 م", "04:00 م"]
-            }
-        ];
+        // البيانات
+        const doctorsData = {
+            cardiology: [
+                {
+                    id: 1,
+                    name: "د. أحمد محمد",
+                    specialty: "طب القلب",
+                    avatar: "د",
+                    rating: 4.8,
+                    experience: "10 سنوات",
+                    location: "صنعاء - حي التحرير",
+                    normalFee: "150 ر.س",
+                    emergencyFee: "300 ر.س",
+                    availableSlots: ["09:00 ص", "10:30 ص", "02:00 م", "04:30 م"]
+                },
+                {
+                    id: 2,
+                    name: "د. خالد عبدالله",
+                    specialty: "أمراض القلب",
+                    avatar: "د",
+                    rating: 4.7,
+                    experience: "8 سنوات",
+                    location: "عدن - كريتر",
+                    normalFee: "140 ر.س",
+                    emergencyFee: "280 ر.س",
+                    availableSlots: ["08:00 ص", "11:00 ص", "03:00 م"]
+                }
+            ],
+            pediatrics: [
+                {
+                    id: 3,
+                    name: "د. فاطمة علي",
+                    specialty: "طب الأطفال",
+                    avatar: "د",
+                    rating: 4.9,
+                    experience: "12 سنوات",
+                    location: "تعز - المدينة",
+                    normalFee: "120 ر.س",
+                    emergencyFee: "250 ر.س",
+                    availableSlots: ["08:30 ص", "10:00 ص", "01:30 م", "04:00 م"]
+                }
+            ]
+        };
 
-        // بيانات المواعيد
-        let appointments = [
-            {
-                id: 1,
-                doctorName: "د. أحمد محمد",
-                specialty: "طب القلب",
-                date: "2024-01-15",
-                time: "10:30 ص",
-                status: "confirmed"
-            },
-            {
-                id: 2,
-                doctorName: "د. فاطمة علي", 
-                specialty: "طب الأطفال",
-                date: "2024-01-16",
-                time: "11:00 ص",
-                status: "pending"
-            }
-        ];
+        // المتغيرات العامة
+        let currentUserType = '';
+        let currentSpecialty = '';
 
-        // وظائف العرض
-        function showSection(sectionName) {
-            // إخفاء جميع الأقسام
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.add('hidden');
+        // وظائف تسجيل الدخول
+        function selectUserType(type) {
+            currentUserType = type;
+            document.querySelectorAll('.user-type-btn').forEach(btn => {
+                btn.classList.remove('selected');
             });
+            event.target.classList.add('selected');
+        }
+
+        function toggleAuthForm() {
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            const toggleText = document.getElementById('toggle-text');
             
-            // إظهار القسم المطلوب
-            document.getElementById(sectionName + '-section').classList.remove('hidden');
-            
-            // تحديث التبويبات
-            document.querySelectorAll('.nav-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            event.target.classList.add('active');
-
-            // تحميل البيانات
-            loadSectionData(sectionName);
-        }
-
-        function loadSectionData(sectionName) {
-            switch(sectionName) {
-                case 'doctors':
-                    loadDoctors();
-                    break;
-                case 'appointments':
-                    loadAppointments();
-                    break;
+            if (loginForm.classList.contains('hidden')) {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                toggleText.textContent = 'ليس لديك حساب؟';
+            } else {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                toggleText.textContent = 'لديك حساب بالفعل؟';
             }
         }
 
-        function loadDoctors() {
-            const grid = document.getElementById('doctors-grid');
-            grid.innerHTML = '';
+        function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            // محاكاة عملية تسجيل الدخول
+            if (email && password && currentUserType) {
+                showDashboard(currentUserType);
+            } else {
+                alert('يرجى ملء جميع الحالات واختيار نوع المستخدم');
+            }
+        }
 
-            doctors.forEach(doctor => {
-                const card = document.createElement('div');
-                card.className = 'doctor-card';
-                card.innerHTML = `
-                    <div class="doctor-header">
-                        <div class="doctor-avatar">${doctor.avatar}</div>
-                        <div class="doctor-info">
-                            <h3>${doctor.name}</h3>
-                            <span class="doctor-specialty">${doctor.specialty}</span>
-                            <div class="doctor-rating">
-                                ⭐ ${doctor.rating} (${doctor.experience})
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="doctor-details">
-                        <div class="detail-item">
-                            <span>📍 الموقع:</span>
-                            <span>${doctor.location}</span>
-                        </div>
-                        <div class="detail-item">
-                            <span>💰 الكشفية:</span>
-                            <span>${doctor.fee}</span>
-                        </div>
-                    </div>
+        function handleRegister(event) {
+            event.preventDefault();
+            const name = document.getElementById('register-name').value;
+            const age = document.getElementById('register-age').value;
+            const phone = document.getElementById('register-phone').value;
+            const governorate = document.getElementById('register-governorate').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            
+            if (name && age && phone && governorate && email && password && currentUserType) {
+                alert('تم إنشاء الحساب بنجاح!');
+                showDashboard(currentUserType);
+            } else {
+                alert('يرجى ملء جميع الحقول المطلوبة');
+            }
+        }
 
-                    <h4 style="margin: 1rem 0 0.5rem 0;">المواعيد المتاحة:</h4>
-                    <div class="available-slots">
-                        ${doctor.availableSlots.map(slot => 
-                            `<div class="time-slot" onclick="selectTimeSlot(${doctor.id}, '${slot}')">${slot}</div>`
-                        ).join('')}
-                    </div>
+        function showDashboard(userType) {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById(`${userType}-dashboard`).classList.remove('hidden');
+        }
 
-                    <button class="btn primary" style="width: 100%; margin-top: 1rem;" 
-                            onclick="showBookingModal(${doctor.id})">
-                        📅 حجز موعد
-                    </button>
-                `;
-                grid.appendChild(card);
+        function logout() {
+            document.querySelectorAll('.dashboard').forEach(dashboard => {
+                dashboard.classList.add('hidden');
+            });
+            document.getElementById('login-screen').classList.remove('hidden');
+            
+            // إعادة تعيين النماذج
+            document.getElementById('login-form').reset();
+            document.getElementById('register-form').reset();
+            document.querySelectorAll('.user-type-btn').forEach(btn => {
+                btn.classList.remove('selected');
             });
         }
 
-        function loadAppointments() {
-            const list = document.getElementById('appointments-list');
-            list.innerHTML = '';
-
-            if (appointments.length === 0) {
-                list.innerHTML = `
-                    <div style="text-align: center; padding: 2rem; color: #666;">
-                        <p>لا توجد مواعيد محجوزة</p>
-                        <button class="btn primary" onclick="showSection('doctors')" style="margin-top: 1rem;">
-                            📅 احجز موعدك الأول
-                        </button>
-                    </div>
-                `;
+        // وظائف واجهة المريض
+        function showDoctors(specialty) {
+            currentSpecialty = specialty;
+            document.getElementById('specialties-section').classList.add('hidden');
+            document.getElementById('doctors-section').classList.remove('hidden');
+            
+            const doctorsList = document.getElementById('doctors-list');
+            const specialtyTitle = document.getElementById('specialty-title');
+            
+            // تحديث العنوان
+            const specialtyNames = {
+                cardiology: 'طب القلب',
+                pediatrics: 'طب الأطفال',
+                surgery: 'الجراحة العامة',
+                eyes: 'طب العيون',
+                teeth: 'طب الأسنان',
+                bones: 'العظام'
+            };
+            specialtyTitle.textContent = `أطباء ${specialtyNames[specialty]}`;
+            
+            // عرض الأطباء
+            doctorsList.innerHTML = '';
+            const doctors = doctorsData[specialty] || [];
+            
+            if (doctors.length === 0) {
+                doctorsList.innerHTML = '<p style="text-align: center; padding: 2rem;">لا توجد أطباء متاحين في هذا التخصص حالياً</p>';
                 return;
             }
-
-            appointments.forEach(appointment => {
-                const item = document.createElement('div');
-                item.className = 'appointment-item';
-                item.innerHTML = `
-                    <div class="appointment-info">
-                        <h4>${appointment.doctorName}</h4>
-                        <div class="appointment-meta">
-                            <span>${appointment.specialty}</span>
-                            <span>${appointment.date}</span>
-                            <span>${appointment.time}</span>
+            
+            doctors.forEach(doctor => {
+                const doctorCard = document.createElement('div');
+                doctorCard.className = 'doctor-card';
+                doctorCard.innerHTML = `
+                    <div class="doctor-avatar">${doctor.avatar}</div>
+                    <div class="doctor-info">
+                        <h3>${doctor.name}</h3>
+                        <div class="doctor-rating">⭐ ${doctor.rating} (${doctor.experience})</div>
+                        <p>📍 ${doctor.location}</p>
+                        
+                        <div class="appointment-types">
+                            <div class="appointment-type" onclick="selectAppointmentType(this, ${doctor.id}, 'normal')">
+                                <div>موعد عادي</div>
+                                <div class="price normal-price">${doctor.normalFee}</div>
+                            </div>
+                            <div class="appointment-type emergency" onclick="selectAppointmentType(this, ${doctor.id}, 'emergency')">
+                                <div>موعد طارئ</div>
+                                <div class="price emergency-price">${doctor.emergencyFee}</div>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <span class="appointment-status status-${appointment.status}">
-                            ${appointment.status === 'confirmed' ? 'مؤكد' : 
-                              appointment.status === 'pending' ? 'في الانتظار' : 'ملغى'}
-                        </span>
-                        <button class="btn secondary" style="margin-right: 0.5rem;" onclick="cancelAppointment(${appointment.id})">
-                            إلغاء
+                        
+                        <button class="btn primary" style="margin-top: 1rem; width: 100%;" 
+                                onclick="showBookingForm(${doctor.id})">
+                            📅 حجز موعد
                         </button>
                     </div>
                 `;
-                list.appendChild(item);
+                doctorsList.appendChild(doctorCard);
             });
         }
 
-        // وظائف الحجز
-        function selectTimeSlot(doctorId, time) {
+        function showSpecialties() {
+            document.getElementById('doctors-section').classList.add('hidden');
+            document.getElementById('specialties-section').classList.remove('hidden');
+        }
+
+        function selectAppointmentType(element, doctorId, type) {
             // إزالة التحديد من جميع الأزرار
-            document.querySelectorAll('.time-slot').forEach(btn => {
+            element.parentElement.querySelectorAll('.appointment-type').forEach(btn => {
                 btn.classList.remove('selected');
             });
             
             // إضافة التحديد للزر المحدد
-            event.target.classList.add('selected');
+            element.classList.add('selected');
         }
 
-        function showBookingModal(doctorId) {
-            const doctor = doctors.find(d => d.id === doctorId);
+        function showBookingForm(doctorId) {
+            const doctor = Object.values(doctorsData).flat().find(d => d.id === doctorId);
             const details = document.getElementById('booking-details');
             
             details.innerHTML = `
                 <div style="margin-bottom: 1.5rem;">
                     <h4>${doctor.name}</h4>
                     <p>${doctor.specialty} - ${doctor.location}</p>
-                    <p>الكشفية: ${doctor.fee}</p>
                 </div>
                 
                 <form onsubmit="bookAppointment(event, ${doctorId})">
@@ -755,12 +1137,19 @@
                         </select>
                     </div>
                     <div class="form-group">
+                        <label>نوع الموعد</label>
+                        <select id="appointment-type" required>
+                            <option value="normal">عادي - ${doctor.normalFee}</option>
+                            <option value="emergency">طارئ - ${doctor.emergencyFee}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label>الاسم الكامل</label>
                         <input type="text" placeholder="أدخل اسمك الكامل" required>
                     </div>
                     <div class="form-group">
                         <label>رقم الهاتف</label>
-                        <input type="tel" placeholder="05XXXXXXXX" required>
+                        <input type="tel" placeholder="77XXXXXXX" required>
                     </div>
                     <div class="form-group">
                         <button type="submit" class="btn success" style="width: 100%;">
@@ -775,60 +1164,37 @@
 
         function bookAppointment(event, doctorId) {
             event.preventDefault();
-            const doctor = doctors.find(d => d.id === doctorId);
-            
-            const newAppointment = {
-                id: appointments.length + 1,
-                doctorName: doctor.name,
-                specialty: doctor.specialty,
-                date: document.getElementById('booking-date').value,
-                time: document.getElementById('booking-time').value,
-                status: 'pending'
-            };
-            
-            appointments.push(newAppointment);
-            alert('تم حجز الموعد بنجاح! سنقوم بتأكيد الحجز عبر الهاتف.');
+            const doctor = Object.values(doctorsData).flat().find(d => d.id === doctorId);
+            alert(`تم حجز الموعد بنجاح مع ${doctor.name}! سيتم تأكيد الحجز عبر الهاتف.`);
             closeModal('booking-modal');
-            loadAppointments();
-        }
-
-        function cancelAppointment(appointmentId) {
-            if (confirm('هل تريد إلغاء هذا الموعد؟')) {
-                appointments = appointments.filter(apt => apt.id !== appointmentId);
-                alert('تم إلغاء الموعد');
-                loadAppointments();
-            }
-        }
-
-        // وظائف البحث
-        function searchDoctors() {
-            const specialty = document.getElementById('specialty').value;
-            const city = document.getElementById('city').value;
-            const date = document.getElementById('appointment-date').value;
-            
-            // هنا يمكن إضافة منطق البحث الحقيقي
-            alert(`جاري البحث عن أطباء ${specialty} في ${city} بتاريخ ${date}`);
-        }
-
-        // وظائف النماذج
-        function showLoginModal() {
-            document.getElementById('login-modal').style.display = 'block';
         }
 
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
         }
 
-        function handleLogin(event) {
-            event.preventDefault();
-            alert('تم تسجيل الدخول بنجاح!');
-            closeModal('login-modal');
+        function filterByLocation() {
+            // محاكاة عملية التصفية
+            const governorate = document.getElementById('governorate-filter').value;
+            const city = document.getElementById('city-filter').value;
+            
+            if (governorate || city) {
+                alert(`جاري البحث عن أطباء في ${governorate} - ${city}`);
+            }
         }
 
-        // تحميل البيانات الأولية
-        document.addEventListener('DOMContentLoaded', function() {
-            loadDoctors();
-        });
+        function showCityClinics(city) {
+            alert(`عرض العيادات في ${city}`);
+        }
+
+        function showAdminSection(section) {
+            // محاكاة تغيير الأقسام في لوحة المدير
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            alert(`عرض قسم ${section}`);
+        }
 
         // إغلاق النماذج عند النقر خارجها
         window.onclick = function(event) {
@@ -836,6 +1202,14 @@
                 event.target.style.display = 'none';
             }
         }
+
+        // تعيين التاريخ الحالي كحد أدنى لحجز المواعيد
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            if (document.getElementById('booking-date')) {
+                document.getElementById('booking-date').min = today;
+            }
+        });
     </script>
 </body>
 </html>
