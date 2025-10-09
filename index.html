@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>لوحة تحكم المدير - نظام إدارة المستشفيات</title>
     <style>
-        /* كل الأنماط السابقة تبقى كما هي */
         :root {
             --primary-color: #2c3e50;
             --secondary-color: #3498db;
@@ -34,10 +33,126 @@
             min-height: 100vh;
         }
 
-        /* كل CSS السابق يبقى كما هو */
-        /* ... */
+        .dashboard-header {
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid var(--primary-color);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
 
-        /* إصلاحات جديدة للعرض */
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .app-logo {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-color);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.5em;
+        }
+
+        .user-info {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            margin-top: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .user-role {
+            background: var(--secondary-color);
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8em;
+        }
+
+        .status.active {
+            background: var(--success-color);
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8em;
+        }
+
+        .header-right {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .header-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .header-btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .logout-btn {
+            background: var(--danger-color);
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+
+        .admin-nav {
+            background: white;
+            padding: 1rem 2rem;
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: nowrap;
+        }
+
+        .nav-btn {
+            background: none;
+            border: 2px solid var(--border-color);
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            font-size: 0.9em;
+            flex-shrink: 0;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--secondary-color);
+            color: var(--secondary-color);
+        }
+
+        .nav-btn.active {
+            background: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+
         .dashboard-content {
             padding: 2rem;
             max-width: 1400px;
@@ -52,6 +167,10 @@
             box-shadow: 0 5px 20px rgba(0,0,0,0.1);
             width: 100%;
             overflow: hidden;
+        }
+
+        .hidden {
+            display: none;
         }
 
         .section-header {
@@ -71,6 +190,87 @@
             margin: 0;
         }
 
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+            margin-left: 0.5rem;
+            white-space: nowrap;
+        }
+
+        .btn.primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn.success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn.warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .btn.danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* أنماط الإحصائيات */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--secondary-color);
+        }
+
+        .stat-icon {
+            font-size: 2.5em;
+            background: var(--light-bg);
+            padding: 1rem;
+            border-radius: 12px;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 0.5rem 0;
+        }
+
+        .stat-change {
+            color: var(--success-color);
+            font-weight: 500;
+        }
+
+        /* أنماط المحتوى */
         .content-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -107,17 +307,6 @@
             background: var(--light-bg);
             font-weight: 600;
             white-space: nowrap;
-        }
-
-        .data-table td {
-            vertical-align: middle;
-        }
-
-        /* تحسين عرض الجداول */
-        .table-container {
-            width: 100%;
-            overflow-x: auto;
-            margin-top: 20px;
         }
 
         .user-info-row {
@@ -214,7 +403,6 @@
             color: white;
         }
 
-        /* تحسين عرض الإحصائيات */
         .system-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -238,148 +426,248 @@
             margin-bottom: 5px;
         }
 
-        /* تحسين التنقل */
-        .admin-nav {
-            background: white;
-            padding: 1rem 2rem;
-            display: flex;
-            gap: 0.5rem;
-            overflow-x: auto;
-            border-bottom: 1px solid var(--border-color);
-            flex-wrap: nowrap;
-        }
-
-        .nav-btn {
-            background: none;
-            border: 2px solid var(--border-color);
-            padding: 0.7rem 1.5rem;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s;
+        .nowrap {
             white-space: nowrap;
-            font-size: 0.9em;
-            flex-shrink: 0;
         }
 
-        /* تحسين الاستجابة */
-        @media (max-width: 1200px) {
-            .data-table {
-                font-size: 0.9em;
-            }
-            
-            .data-table th,
-            .data-table td {
-                padding: 8px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .dashboard-content {
-                padding: 1rem;
-            }
-            
-            .dashboard-section {
-                padding: 1rem;
-            }
-            
-            .section-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .section-header > div {
-                width: 100%;
-                display: flex;
-                gap: 0.5rem;
-                flex-wrap: wrap;
-            }
-            
-            .data-table {
-                font-size: 0.8em;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-            }
-            
-            .action-btn {
-                padding: 4px 8px;
-                font-size: 0.7em;
-            }
-            
-            .content-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .admin-nav {
-                padding: 0.5rem 1rem;
-            }
-            
-            .nav-btn {
-                padding: 0.5rem 1rem;
-                font-size: 0.8em;
-            }
-            
-            .data-table {
-                font-size: 0.7em;
-            }
-            
-            .user-info-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 5px;
-            }
-            
-            .user-avatar {
-                width: 30px;
-                height: 30px;
-                font-size: 0.8em;
-            }
-        }
-
-        /* منع التداخل في النص */
         .text-overflow {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
-        .nowrap {
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        /* أنماط العيادات */
+        .clinics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .clinic-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            position: relative;
+            border: 2px solid transparent;
+        }
+
+        .clinic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-color: var(--primary-color);
+        }
+
+        .clinic-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-bg);
+        }
+
+        .clinic-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            background: var(--light-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+        }
+
+        .clinic-info h3 {
+            color: var(--secondary-color);
+            margin-bottom: 5px;
+            font-size: 1.3em;
+        }
+
+        .clinic-type {
+            background: var(--primary-color);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+        }
+
+        .clinic-details {
+            margin-bottom: 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--light-bg);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .clinic-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: var(--light-bg);
+            border-radius: 10px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .clinic-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .clinic-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+            text-align: center;
             white-space: nowrap;
         }
 
-        /* تحسين الهيدر */
-        .dashboard-header {
+        .clinic-btn.primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .clinic-btn.warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .clinic-btn.danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .clinic-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* نماذج */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
             background: white;
-            padding: 1rem 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 3px solid var(--primary-color);
-            flex-wrap: wrap;
-            gap: 1rem;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex: 1;
-            min-width: 0;
+        .confirm-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 2000;
         }
 
-        .header-right {
+        .confirm-content {
+            background: white;
+            margin: 20% auto;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .confirm-buttons {
             display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 10px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9em;
+        }
+
+        /* استجابة */
+        @media (max-width: 768px) {
+            .dashboard-content {
+                padding: 1rem;
+            }
+            .dashboard-section {
+                padding: 1rem;
+            }
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            .clinics-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- كل الهيكل HTML السابق يبقى كما هو -->
     <div id="admin-dashboard" class="admin-dashboard">
         <div class="dashboard-header">
             <div class="header-left">
@@ -401,71 +689,118 @@
 
         <nav class="admin-nav">
             <button class="nav-btn active" onclick="showSection('overview', event)">📊 النظرة العامة</button>
-            <button class="nav-btn" onclick="showSection('users', event)">👥 إدارة المستخدمين</button>
+            <button class="nav-btn" onclick="showSection('patients', event)">👨‍⚕️ إدارة المرضى</button>
             <button class="nav-btn" onclick="showSection('doctors', event)">🩺 إدارة الأطباء</button>
-            <button class="nav-btn" onclick="showSection('specialties', event)">🎯 إدارة التخصصات</button>
             <button class="nav-btn" onclick="showSection('clinics', event)">🏥 إدارة العيادات</button>
-            <button class="nav-btn" onclick="showSection('maps', event)">🗺️ الخرائط والمواقع</button>
-            <button class="nav-btn" onclick="showSection('appearance', event)">🎨 المظهر والعلامة</button>
+            <button class="nav-btn" onclick="showSection('appointments', event)">📅 المواعيد</button>
+            <button class="nav-btn" onclick="showSection('finance', event)">💰 المحاسبة</button>
+            <button class="nav-btn" onclick="showSection('users', event)">👥 إدارة المستخدمين</button>
             <button class="nav-btn" onclick="showSection('system', event)">⚙️ النظام</button>
         </nav>
 
         <div class="dashboard-content">
-            <!-- قسم إدارة المستخدمين - تم تحسينه -->
-            <div id="users" class="dashboard-section hidden">
+            <!-- النظرة العامة -->
+            <div id="overview" class="dashboard-section">
                 <div class="section-header">
-                    <h2>👥 إدارة المستخدمين</h2>
+                    <h2>النظرة العامة على النظام</h2>
                     <div>
-                        <button class="btn success" onclick="showAddUserModal()">➕ إضافة مستخدم</button>
-                        <button class="btn primary" onclick="exportUsers()">📤 تصدير البيانات</button>
+                        <button class="btn primary" onclick="refreshStats()">🔄 تحديث</button>
+                        <button class="btn success" onclick="generateReport()">📄 تقرير كامل</button>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-info">
+                            <h3>إجمالي المستخدمين</h3>
+                            <div class="stat-number">1,247</div>
+                            <div class="stat-change">+24 هذا الأسبوع</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🩺</div>
+                        <div class="stat-info">
+                            <h3>عدد الأطباء</h3>
+                            <div class="stat-number">89</div>
+                            <div class="stat-change">+3 جديد</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👨‍⚕️</div>
+                        <div class="stat-info">
+                            <h3>المرضى النشطين</h3>
+                            <div class="stat-number">2,156</div>
+                            <div class="stat-change">+45 جديد</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-info">
+                            <h3>الإيرادات</h3>
+                            <div class="stat-number">125,430 ر.ي</div>
+                            <div class="stat-change">+15% عن الشهر الماضي</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- إدارة المرضى -->
+            <div id="patients" class="dashboard-section hidden">
+                <div class="section-header">
+                    <h2>👨‍⚕️ إدارة المرضى</h2>
+                    <div>
+                        <button class="btn success" onclick="showAddPatientModal()">➕ إضافة مريض</button>
+                        <button class="btn primary" onclick="exportPatients()">📤 تصدير البيانات</button>
+                        <button class="btn warning" onclick="showPatientAnalytics()">📈 إحصائيات المرضى</button>
                     </div>
                 </div>
 
                 <div class="content-grid">
                     <div class="content-card">
-                        <h4>📈 إحصائيات المستخدمين</h4>
+                        <h4>📊 إحصائيات المرضى</h4>
                         <div class="system-stats">
                             <div class="system-stat">
-                                <span class="stat-value">1,247</span>
-                                <div class="nowrap">إجمالي المستخدمين</div>
+                                <span class="stat-value">2,156</span>
+                                <div class="nowrap">إجمالي المرضى</div>
                             </div>
                             <div class="system-stat">
-                                <span class="stat-value">89</span>
-                                <div class="nowrap">أطباء</div>
+                                <span class="stat-value">156</span>
+                                <div class="nowrap">مرضى اليوم</div>
                             </div>
                             <div class="system-stat">
                                 <span class="stat-value">45</span>
-                                <div class="nowrap">مسؤولين</div>
+                                <div class="nowrap">مرضى جدد</div>
                             </div>
                             <div class="system-stat">
-                                <span class="stat-value">+24</span>
-                                <div class="nowrap">مستخدم جديد</div>
+                                <span class="stat-value">12</span>
+                                <div class="nowrap">في الانتظار</div>
                             </div>
                         </div>
                     </div>
 
                     <div class="content-card">
-                        <h4>🔔 المستخدمين الجدد</h4>
+                        <h4>🔔 مرضى اليوم</h4>
                         <div style="margin-top: 15px;">
                             <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid var(--border-color);">
                                 <div class="user-info-row">
-                                    <div class="user-avatar">م</div>
+                                    <div class="user-avatar">ع</div>
                                     <div class="user-details">
-                                        <div class="user-name">محمد أحمد</div>
-                                        <div class="user-role">طبيب - القلب</div>
+                                        <div class="user-name">علي محمد</div>
+                                        <div class="user-role">موعد: 10:00 ص</div>
                                     </div>
                                 </div>
-                                <span class="status-badge status-pending nowrap">بانتظار الموافقة</span>
+                                <span class="status-badge status-pending nowrap">في الانتظار</span>
                             </div>
                             <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px;">
                                 <div class="user-info-row">
                                     <div class="user-avatar">ف</div>
                                     <div class="user-details">
-                                        <div class="user-name">فاطمة محمد</div>
-                                        <div class="user-role">ممرضة</div>
+                                        <div class="user-name">فهد أحمد</div>
+                                        <div class="user-role">موعد: 11:30 ص</div>
                                     </div>
                                 </div>
-                                <span class="status-badge status-active nowrap">نشط</span>
+                                <span class="status-badge status-active nowrap">تم الكشف</span>
                             </div>
                         </div>
                     </div>
@@ -473,56 +808,36 @@
 
                 <div class="table-container">
                     <div class="content-card">
-                        <h4>👥 قائمة المستخدمين</h4>
+                        <h4>👨‍⚕️ قائمة المرضى</h4>
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th style="width: 20%;">المستخدم</th>
-                                    <th style="width: 20%;">البريد الإلكتروني</th>
-                                    <th style="width: 15%;">الدور</th>
+                                    <th style="width: 20%;">المريض</th>
+                                    <th style="width: 15%;">العمر</th>
+                                    <th style="width: 20%;">الهاتف</th>
+                                    <th style="width: 20%;">الطبيب المعالج</th>
                                     <th style="width: 15%;">الحالة</th>
-                                    <th style="width: 15%;">آخر نشاط</th>
-                                    <th style="width: 15%;">الإجراءات</th>
+                                    <th style="width: 10%;">الإجراءات</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>
                                         <div class="user-info-row">
-                                            <div class="user-avatar">أ</div>
+                                            <div class="user-avatar">م</div>
                                             <div class="user-details">
-                                                <div class="user-name">أحمد علي</div>
+                                                <div class="user-name">محمد عبدالله</div>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="text-overflow">ahmed@hospital.com</td>
-                                    <td class="nowrap">طبيب</td>
+                                    <td class="nowrap">35 سنة</td>
+                                    <td class="nowrap">0551234567</td>
+                                    <td class="text-overflow">د. أحمد علي</td>
                                     <td><span class="status-badge status-active nowrap">نشط</span></td>
-                                    <td class="nowrap">منذ 2 ساعة</td>
                                     <td>
                                         <div class="action-buttons">
+                                            <button class="action-btn view nowrap">سجل</button>
                                             <button class="action-btn edit nowrap">تعديل</button>
-                                            <button class="action-btn view nowrap">عرض</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="user-info-row">
-                                            <div class="user-avatar">س</div>
-                                            <div class="user-details">
-                                                <div class="user-name">سارة محمد</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="text-overflow">sara@hospital.com</td>
-                                    <td class="nowrap">مدير</td>
-                                    <td><span class="status-badge status-active nowrap">نشط</span></td>
-                                    <td class="nowrap">منذ 5 دقائق</td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="action-btn edit nowrap">تعديل</button>
-                                            <button class="action-btn view nowrap">عرض</button>
                                         </div>
                                     </td>
                                 </tr>
@@ -532,13 +847,14 @@
                 </div>
             </div>
 
-            <!-- قسم إدارة الأطباء - تم تحسينه -->
+            <!-- إدارة الأطباء -->
             <div id="doctors" class="dashboard-section hidden">
                 <div class="section-header">
                     <h2>🩺 إدارة الأطباء</h2>
                     <div>
                         <button class="btn success" onclick="showAddDoctorModal()">➕ إضافة طبيب</button>
                         <button class="btn primary" onclick="exportDoctors()">📤 تصدير البيانات</button>
+                        <button class="btn warning" onclick="showDoctorSchedule()">📅 الجداول</button>
                     </div>
                 </div>
 
@@ -619,53 +935,216 @@
                                         </div>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        <div class="user-info-row">
-                                            <div class="user-avatar">د</div>
-                                            <div class="user-details">
-                                                <div class="user-name">د. فاطمة علي</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="nowrap">طب الأطفال</td>
-                                    <td class="text-overflow">مستشفى الملك التخصصي</td>
-                                    <td class="nowrap">⭐ 4.8</td>
-                                    <td><span class="status-badge status-active nowrap">نشط</span></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="action-btn edit nowrap">تعديل</button>
-                                            <button class="action-btn view nowrap">عرض</button>
-                                        </div>
-                                    </td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <!-- باقي الأقسام تبقى كما هي -->
-            <!-- ... -->
+            <!-- إدارة العيادات -->
+            <div id="clinics" class="dashboard-section hidden">
+                <div class="section-header">
+                    <h2>🏥 إدارة العيادات</h2>
+                    <div>
+                        <button class="btn success" onclick="showAddClinicModal()">➕ إضافة عيادة</button>
+                        <button class="btn primary" onclick="exportClinicsData()">📤 تصدير البيانات</button>
+                        <button class="btn warning" onclick="showClinicAnalytics()">📈 إحصائيات</button>
+                    </div>
+                </div>
+
+                <div class="clinics-grid" id="clinics-grid">
+                    <!-- سيتم ملؤها بالبيانات -->
+                </div>
+            </div>
+
+            <!-- المواعيد -->
+            <div id="appointments" class="dashboard-section hidden">
+                <div class="section-header">
+                    <h2>📅 إدارة المواعيد</h2>
+                    <div>
+                        <button class="btn success" onclick="showAddAppointmentModal()">➕ حجز موعد</button>
+                        <button class="btn primary" onclick="exportAppointments()">📤 تصدير البيانات</button>
+                        <button class="btn warning" onclick="showCalendar()">📅 التقويم</button>
+                    </div>
+                </div>
+
+                <div class="content-grid">
+                    <div class="content-card">
+                        <h4>📊 إحصائيات المواعيد</h4>
+                        <div class="system-stats">
+                            <div class="system-stat">
+                                <span class="stat-value">156</span>
+                                <div class="nowrap">مواعيد اليوم</div>
+                            </div>
+                            <div class="system-stat">
+                                <span class="stat-value">45</span>
+                                <div class="nowrap">مكتملة</div>
+                            </div>
+                            <div class="system-stat">
+                                <span class="stat-value">12</span>
+                                <div class="nowrap">ملغاة</div>
+                            </div>
+                            <div class="system-stat">
+                                <span class="stat-value">89</span>
+                                <div class="nowrap">قيد الانتظار</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-card">
+                        <h4>🔔 مواعيد اليوم</h4>
+                        <div style="margin-top: 15px;">
+                            <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; margin-bottom: 10px;">
+                                <strong>د. أحمد - عيادة القلب</strong>
+                                <div>10:00 ص - محمد عبدالله</div>
+                                <span class="status-badge status-pending">في الانتظار</span>
+                            </div>
+                            <div style="background: #e8f5e8; padding: 15px; border-radius: 8px;">
+                                <strong>د. فاطمة - طب الأطفال</strong>
+                                <div>11:30 ص - سارة محمد</div>
+                                <span class="status-badge status-active">تم الكشف</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- المحاسبة -->
+            <div id="finance" class="dashboard-section hidden">
+                <div class="section-header">
+                    <h2>💰 المحاسبة والمالية</h2>
+                    <div>
+                        <button class="btn success" onclick="showAddInvoiceModal()">➕ فاتورة جديدة</button>
+                        <button class="btn primary" onclick="exportFinancialData()">📤 تصدير البيانات</button>
+                        <button class="btn warning" onclick="showFinancialReports()">📈 التقارير</button>
+                    </div>
+                </div>
+
+                <div class="content-grid">
+                    <div class="content-card">
+                        <h4>📊 الإحصائيات المالية</h4>
+                        <div class="system-stats">
+                            <div class="system-stat">
+                                <span class="stat-value">125,430</span>
+                                <div class="nowrap">إجمالي الإيرادات</div>
+                            </div>
+                            <div class="system-stat">
+                                <span class="stat-value">45,620</span>
+                                <div class="nowrap">المصروفات</div>
+                            </div>
+                            <div class="system-stat">
+                                <span class="stat-value">79,810</span>
+                                <div class="nowrap">صافي الربح</div>
+                            </div>
+                            <div class="system-stat">
+                                <span class="stat-value">+15%</span>
+                                <div class="nowrap">نمو هذا الشهر</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-card">
+                        <h4>💳 آخر المعاملات</h4>
+                        <div style="margin-top: 15px;">
+                            <div style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid var(--border-color);">
+                                <div>
+                                    <strong>فاتورة #00125</strong>
+                                    <div style="font-size: 0.8em; color: #666;">محمد عبدالله</div>
+                                </div>
+                                <div style="text-align: left;">
+                                    <strong style="color: var(--success-color);">+450 ر.ي</strong>
+                                    <div style="font-size: 0.8em; color: #666;">اليوم 10:00 ص</div>
+                                </div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 10px;">
+                                <div>
+                                    <strong>فاتورة #00124</strong>
+                                    <div style="font-size: 0.8em; color: #666;">سارة محمد</div>
+                                </div>
+                                <div style="text-align: left;">
+                                    <strong style="color: var(--success-color);">+320 ر.ي</strong>
+                                    <div style="font-size: 0.8em; color: #666;">أمس 11:30 ص</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- باقي الأقسام -->
+            <div id="users" class="dashboard-section hidden">
+                <!-- محتوى إدارة المستخدمين -->
+            </div>
+
+            <div id="system" class="dashboard-section hidden">
+                <!-- محتوى النظام -->
+            </div>
         </div>
     </div>
 
-    <!-- باقي الكود يبقى كما هو -->
+    <!-- النماذج -->
+    <div id="logout-confirm" class="confirm-modal">
+        <div class="confirm-content">
+            <h3>🚪 تأكيد تسجيل الخروج</h3>
+            <p>هل أنت متأكد أنك تريد تسجيل الخروج من لوحة التحكم؟</p>
+            <div class="confirm-buttons">
+                <button class="btn danger" onclick="performLogout()">نعم، سجل الخروج</button>
+                <button class="btn primary" onclick="closeConfirmModal()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="add-clinic-modal" class="modal">
+        <div class="modal-content">
+            <h3>➕ إضافة عيادة جديدة</h3>
+            <form onsubmit="addNewClinic(event)">
+                <div class="form-group">
+                    <label>اسم العيادة:</label>
+                    <input type="text" id="clinic-name" required>
+                </div>
+                <div class="form-group">
+                    <label>نوع العيادة:</label>
+                    <select id="clinic-type" required>
+                        <option value="">اختر النوع</option>
+                        <option value="عيادة">عيادة</option>
+                        <option value="مستشفى">مستشفى</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn success">إضافة العيادة</button>
+                    <button type="button" class="btn danger" onclick="closeModal('add-clinic-modal')">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
-        // جميع الدوال السابقة تبقى كما هي
+        // بيانات العيادات
+        let clinics = [
+            {
+                id: 1,
+                name: "عيادة القلب المتخصصة",
+                type: "عيادة",
+                logo: "❤️",
+                address: "الرياض - حي العليا",
+                phone: "0112345678",
+                doctors: 5,
+                appointments: 45,
+                rating: 4.8
+            }
+        ];
+
+        // وظائف التنقل
         function showSection(sectionName, event) {
-            // إخفاء جميع الأقسام
             document.querySelectorAll('.dashboard-section').forEach(section => {
                 section.classList.add('hidden');
             });
             
-            // إظهار القسم المطلوب
             const targetSection = document.getElementById(sectionName);
             if (targetSection) {
                 targetSection.classList.remove('hidden');
             }
             
-            // تحديث الأزرار النشطة
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
@@ -675,7 +1154,114 @@
             }
         }
 
-        // باقي الدوال...
+        // وظائف العيادات
+        function loadClinicsData() {
+            const grid = document.getElementById('clinics-grid');
+            if (!grid) return;
+            
+            grid.innerHTML = '';
+
+            clinics.forEach(clinic => {
+                const card = document.createElement('div');
+                card.className = 'clinic-card';
+                card.innerHTML = `
+                    <div class="clinic-header">
+                        <div class="clinic-logo">${clinic.logo}</div>
+                        <div class="clinic-info">
+                            <h3>${clinic.name}</h3>
+                            <span class="clinic-type">${clinic.type}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="clinic-details">
+                        <div class="detail-row">
+                            <span class="detail-label">📍 العنوان:</span>
+                            <span class="detail-value">${clinic.address}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">📞 الهاتف:</span>
+                            <span class="detail-value">${clinic.phone}</span>
+                        </div>
+                    </div>
+
+                    <div class="clinic-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">${clinic.doctors}</span>
+                            <span class="stat-label">أطباء</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">${clinic.appointments}</span>
+                            <span class="stat-label">موعد/أسبوع</span>
+                        </div>
+                    </div>
+
+                    <div class="clinic-actions">
+                        <button class="clinic-btn primary" onclick="editClinic(${clinic.id})">✏️ تعديل</button>
+                        <button class="clinic-btn danger" onclick="deleteClinic(${clinic.id})">🗑️ حذف</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function showAddClinicModal() {
+            document.getElementById('add-clinic-modal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function addNewClinic(event) {
+            event.preventDefault();
+            alert('تم إضافة العيادة بنجاح!');
+            closeModal('add-clinic-modal');
+        }
+
+        // وظائف تسجيل الخروج
+        function confirmLogout() {
+            document.getElementById('logout-confirm').style.display = 'block';
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('logout-confirm').style.display = 'none';
+        }
+
+        function performLogout() {
+            alert('تم تسجيل الخروج بنجاح!');
+            window.location.href = 'login.html';
+        }
+
+        // جميع الوظائف الجديدة
+        function showAddPatientModal() { alert('فتح نموذج إضافة مريض'); }
+        function exportPatients() { alert('جاري تصدير بيانات المرضى...'); }
+        function showPatientAnalytics() { alert('عرض إحصائيات المرضى...'); }
+        function showAddDoctorModal() { alert('فتح نموذج إضافة طبيب'); }
+        function exportDoctors() { alert('جاري تصدير بيانات الأطباء...'); }
+        function showDoctorSchedule() { alert('عرض جدول الأطباء...'); }
+        function showAddAppointmentModal() { alert('فتح نموذج حجز موعد'); }
+        function exportAppointments() { alert('جاري تصدير بيانات المواعيد...'); }
+        function showCalendar() { alert('عرض التقويم...'); }
+        function showAddInvoiceModal() { alert('فتح نموذج فاتورة جديدة'); }
+        function exportFinancialData() { alert('جاري تصدير البيانات المالية...'); }
+        function showFinancialReports() { alert('عرض التقارير المالية...'); }
+        function exportClinicsData() { alert('جاري تصدير بيانات العيادات...'); }
+        function showClinicAnalytics() { alert('عرض إحصائيات العيادات...'); }
+        function refreshStats() { alert('جاري تحديث الإحصائيات...'); }
+        function generateReport() { alert('جاري إنشاء التقرير...'); }
+        function showSystemSettings() { showSection('system'); }
+
+        // تحميل البيانات
+        document.addEventListener('DOMContentLoaded', function() {
+            loadClinicsData();
+        });
+
+        // إغلاق النماذج
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>
